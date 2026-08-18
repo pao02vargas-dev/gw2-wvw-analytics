@@ -1,18 +1,12 @@
 import os
+import subprocess
 import traceback
-import requests
-from fastapi import FastAPI, File, UploadFile, HTTPException, BackgroundTasks
+from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from dotenv import load_dotenv
 from pathlib import Path
-
-# Apuntar al archivo .env en la raíz del proyecto
-env_path = Path(__file__).resolve().parent.parent / '.env'
-load_dotenv(dotenv_path=env_path)
 
 app = FastAPI(title="GW2 WvW Combat Analytics API")
 
-# Configurar CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -21,74 +15,47 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Credenciales desde .env
-DATABRICKS_HOST = os.getenv("DATABRICKS_HOST")
-DATABRICKS_TOKEN = os.getenv("DATABRICKS_TOKEN")
-
-# Directorio local de respaldo
 LOCAL_BRONZE_DIR = "databricks/bronze_data"
 os.makedirs(LOCAL_BRONZE_DIR, exist_ok=True)
 
-def upload_file_to_databricks_volume(local_file_path: str, file_name: str):
-    """
-    Sube el archivo al Volumen de Databricks usando requests con depuración de URL activa.
-    """
-    if not DATABRICKS_HOST or not DATABRICKS_TOKEN:
-        print("--- ERROR: Las credenciales de Databricks no están configuradas en el .env ---")
-        return
-
+def git_commit_and_push(file_name: str):
     try:
-        base_host = DATABRICKS_HOST.strip().rstrip('/')
+        # Apunta a la raíz del proyecto (subiendo un nivel desde backend/)
+        repo_dir = Path(__file__).resolve().parent.parent
         
-        # Endpoint oficial de la API de Files para Unity Catalog Volumes
-        volume_api_path = f"/api/2.0/fs/files/Volumes/gw2_analytics/bronze/raw_logs/{file_name}"
-        url = f"{base_host}{volume_api_path}"
-
-        print(f"--- DEBUG URL --- Intentando conectar a: {url}")
-
-        headers = {
-            "Authorization": f"Bearer {DATABRICKS_TOKEN.strip()}"
-        }
-
-        # Leer archivo binario
-        with open(local_file_path, "rb") as f:
-            file_bytes = f.read()
-
-        # Petición PUT con timeout de 30 segundos
-        response = requests.put(url, headers=headers, data=file_bytes, timeout=30)
+        # 1. git add del archivo JSON generado
+        subprocess.run(["git", "add", f"databricks/bronze_data/{file_name}"], cwd=repo_dir, check=True)
         
-        print(f"Código de respuesta HTTP: {response.status_code}")
-        if response.status_code in [200, 201]:
-            print(f"¡Éxito! Archivo {file_name} subido al volumen de Databricks correctamente.")
-        else:
-            print(f"--- ERROR EN RESPUESTA DE DATABRICKS ---")
-            print(response.text)
-            
+        # 2. git commit automático
+        commit_message = f"chore(bronze): auto-agregar log procesado {file_name}"
+        subprocess.run(["git", "commit", "-m", commit_message], cwd=repo_dir, check=True)
+        
+        print(f"¡Git commit realizado con éxito para {file_name}!")
+        
+    except subprocess.CalledProcessError as e:
+        print(f"Aviso de Git (posiblemente sin cambios nuevos): {e}")
     except Exception as e:
-        print("--- ERROR DETALLADO EN LA SUBIDA ---")
         traceback.print_exc()
 
 @app.post("/api/analyze")
-async def analyze_log(file: UploadFile = File(...), background_tasks: BackgroundTasks = BackgroundTasks()):
+async def analyze_log(file: UploadFile = File(...)):
     try:
-        # 1. Leer contenido
         contents = await file.read()
         file_name = file.filename or "unknown.zevtc"
         
-        # Crear nombre de archivo para Databricks
         json_file_name = file_name.replace(".zevtc", "_analysis.json")
         local_file_path = os.path.join(LOCAL_BRONZE_DIR, json_file_name)
 
-        # 2. Guardar copia local
+        # Guardar archivo localmente
         with open(local_file_path, "wb") as f:
             f.write(contents)
 
-        # 3. Programar subida en segundo plano
-        background_tasks.add_task(upload_file_to_databricks_volume, local_file_path, json_file_name)
+        # Ejecutar commit automático
+        git_commit_and_push(json_file_name)
 
         return {
             "status": "success",
-            "message": "Archivo recibido. Guardado localmente y procesándose en Databricks (Bronze) en segundo plano.",
+            "message": "Archivo procesado, guardado y commiteado en Git automáticamente.",
             "file": json_file_name
         }
 
