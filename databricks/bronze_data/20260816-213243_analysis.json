@@ -1,0 +1,267 @@
+{
+    "id": "ARo2-20260816-213243",
+    "permalink": "https://wvw.report/ARo2-20260816-213243_wvw",
+    "uploadTime": 1787017414,
+    "encounterTime": 1786937565,
+    "generator": "Elite Insights",
+    "generatorId": 1,
+    "generatorVersion": 2,
+    "language": "en",
+    "languageId": 0,
+    "evtc": {
+        "type": "EVTC",
+        "version": "20260816",
+        "bossId": 1
+    },
+    "players": {
+        "Moira Snowraven": {
+            "display_name": "Kurame.1293",
+            "character_name": "Moira Snowraven",
+            "profession": 8,
+            "elite_spec": 34
+        },
+        "Enshur Il": {
+            "display_name": "Enshur.4069",
+            "character_name": "Enshur Il",
+            "profession": 7,
+            "elite_spec": 40
+        },
+        "Ferox Blackmane": {
+            "display_name": "Bhrutei.5937",
+            "character_name": "Ferox Blackmane",
+            "profession": 2,
+            "elite_spec": 74
+        },
+        "Jakylove": {
+            "display_name": "Dive.5023",
+            "character_name": "Jakylove",
+            "profession": 2,
+            "elite_spec": 61
+        },
+        "Lucia Lightspirit": {
+            "display_name": "im ing cadipe.3709",
+            "character_name": "Lucia Lightspirit",
+            "profession": 1,
+            "elite_spec": 27
+        },
+        "Für Elisse": {
+            "display_name": "Camarin.6312",
+            "character_name": "Für Elisse",
+            "profession": 1,
+            "elite_spec": 62
+        },
+        "Xcartonxx": {
+            "display_name": "Xcarton.4702",
+            "character_name": "Xcartonxx",
+            "profession": 1,
+            "elite_spec": 81
+        },
+        "Charrussy": {
+            "display_name": "Sergal.1908",
+            "character_name": "Charrussy",
+            "profession": 9,
+            "elite_spec": 52
+        },
+        "Aiko Miyashiro": {
+            "display_name": "Miyashiro.7981",
+            "character_name": "Aiko Miyashiro",
+            "profession": 8,
+            "elite_spec": 0
+        },
+        "Ellé Kät": {
+            "display_name": "Kat.5731",
+            "character_name": "Ellé Kät",
+            "profession": 6,
+            "elite_spec": 80
+        },
+        "Roja Ty Lee": {
+            "display_name": "LuckyJay.6723",
+            "character_name": "Roja Ty Lee",
+            "profession": 6,
+            "elite_spec": 80
+        },
+        "Nagginí": {
+            "display_name": "zaryta.8302",
+            "character_name": "Nagginí",
+            "profession": 4,
+            "elite_spec": 5
+        },
+        "Nick Klauss": {
+            "display_name": "alvarorasta.5691",
+            "character_name": "Nick Klauss",
+            "profession": 4,
+            "elite_spec": 5
+        },
+        "Esmeräldä": {
+            "display_name": "Landewe.2605",
+            "character_name": "Esmeräldä",
+            "profession": 7,
+            "elite_spec": 73
+        },
+        "Rc Luminaria": {
+            "display_name": "Rc Ganz.2315",
+            "character_name": "Rc Luminaria",
+            "profession": 1,
+            "elite_spec": 65
+        },
+        "Omelus War": {
+            "display_name": "Omel.5204",
+            "character_name": "Omelus War",
+            "profession": 2,
+            "elite_spec": 61
+        },
+        "Ing Malpagado": {
+            "display_name": "Daniel.3052",
+            "character_name": "Ing Malpagado",
+            "profession": 3,
+            "elite_spec": 75
+        },
+        "Tira Mis You": {
+            "display_name": "Tira.4028",
+            "character_name": "Tira Mis You",
+            "profession": 1,
+            "elite_spec": 62
+        },
+        "Skaldi Bjorndottir": {
+            "display_name": "deathcult.7125",
+            "character_name": "Skaldi Bjorndottir",
+            "profession": 2,
+            "elite_spec": 74
+        },
+        "Béllazé": {
+            "display_name": "zeropang.8260",
+            "character_name": "Béllazé",
+            "profession": 4,
+            "elite_spec": 5
+        },
+        "Arthis Lionheart": {
+            "display_name": "Fluff.4068",
+            "character_name": "Arthis Lionheart",
+            "profession": 8,
+            "elite_spec": 34
+        },
+        "Kîîwî": {
+            "display_name": "Kiwi.6532",
+            "character_name": "Kîîwî",
+            "profession": 6,
+            "elite_spec": 48
+        },
+        "Lmqwd": {
+            "display_name": "Fohan.3182",
+            "character_name": "Lmqwd",
+            "profession": 2,
+            "elite_spec": 18
+        },
+        "Wraith Zartric": {
+            "display_name": "Danthis.6035",
+            "character_name": "Wraith Zartric",
+            "profession": 8,
+            "elite_spec": 76
+        },
+        "Ar Pyromania": {
+            "display_name": "Maca Pruim.5619",
+            "character_name": "Ar Pyromania",
+            "profession": 6,
+            "elite_spec": 80
+        },
+        "Saucenballs": {
+            "display_name": "Kranck.9738",
+            "character_name": "Saucenballs",
+            "profession": 9,
+            "elite_spec": 79
+        },
+        "Oriahnna Grimald": {
+            "display_name": "Troll King.5294",
+            "character_name": "Oriahnna Grimald",
+            "profession": 8,
+            "elite_spec": 34
+        },
+        "Zarzarek": {
+            "display_name": "Zarzarek.6498",
+            "character_name": "Zarzarek",
+            "profession": 6,
+            "elite_spec": 80
+        },
+        "Bourgeois": {
+            "display_name": "Bourgeois.1894",
+            "character_name": "Bourgeois",
+            "profession": 7,
+            "elite_spec": 40
+        },
+        "Sol Atonatiuh": {
+            "display_name": "Sol Cero.7145",
+            "character_name": "Sol Atonatiuh",
+            "profession": 8,
+            "elite_spec": 34
+        },
+        "Brynhildr Forst": {
+            "display_name": "Shubitah.3017",
+            "character_name": "Brynhildr Forst",
+            "profession": 1,
+            "elite_spec": 62
+        },
+        "Payton My Inmortal": {
+            "display_name": "Vyral.7513",
+            "character_name": "Payton My Inmortal",
+            "profession": 1,
+            "elite_spec": 27
+        },
+        "Akromita": {
+            "display_name": "Skatoll.3728",
+            "character_name": "Akromita",
+            "profession": 1,
+            "elite_spec": 62
+        },
+        "Theron Dyr": {
+            "display_name": "Genzerg.7215",
+            "character_name": "Theron Dyr",
+            "profession": 4,
+            "elite_spec": 5
+        },
+        "Wínd Hawk": {
+            "display_name": "Chepo.7241",
+            "character_name": "Wínd Hawk",
+            "profession": 4,
+            "elite_spec": 55
+        },
+        "Der Baron Haku": {
+            "display_name": "Schattenjager.2036",
+            "character_name": "Der Baron Haku",
+            "profession": 7,
+            "elite_spec": 73
+        },
+        "Ävatar Körra": {
+            "display_name": "VerdeRap.8012",
+            "character_name": "Ävatar Körra",
+            "profession": 6,
+            "elite_spec": 56
+        },
+        "Wisadell": {
+            "display_name": "sasaki.2081",
+            "character_name": "Wisadell",
+            "profession": 4,
+            "elite_spec": 72
+        }
+    },
+    "encounter": {
+        "uniqueId": null,
+        "success": true,
+        "duration": 28.45,
+        "compDps": 0,
+        "numberOfPlayers": 35,
+        "numberOfGroups": 9,
+        "bossId": 1,
+        "boss": "World vs World",
+        "isCm": false,
+        "isLegendaryCm": false,
+        "emboldened": 0,
+        "gw2Build": 205505,
+        "jsonAvailable": true
+    },
+    "report": {
+        "anonymous": false,
+        "detailed": false
+    },
+    "error": null,
+    "userToken": "nkegog4lrcofn62hdgvmv6i85tnu7ab0"
+}
