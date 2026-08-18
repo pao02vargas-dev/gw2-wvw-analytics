@@ -18,51 +18,90 @@ app.add_middleware(
 LOCAL_BRONZE_DIR = "databricks/bronze_data"
 os.makedirs(LOCAL_BRONZE_DIR, exist_ok=True)
 
-def git_commit_and_push(file_name: str):
+# ⚠️ Actualiza esta ruta con la ubicación exacta de tu ejecutable CLI en tu PC
+PARSER_EXE = r"C:\Users\andpa\gw2-wvw-analytics\tools\EliteInsights\GW2EICLI\GuildWars2EliteInsights-CLI.exe"
+
+def git_pull_commit_and_push(file_name: str):
     try:
-        # Apunta a la raíz del proyecto (subiendo un nivel desde backend/)
         repo_dir = Path(__file__).resolve().parent.parent
+        
+        # 0. git pull para sincronizar cambios remotos antes de trabajar
+        subprocess.run(["git", "pull", "--rebase"], cwd=repo_dir, check=True)
         
         # 1. git add del archivo JSON generado
         subprocess.run(["git", "add", f"databricks/bronze_data/{file_name}"], cwd=repo_dir, check=True)
         
         # 2. git commit automático
-        commit_message = f"chore(bronze): auto-agregar log procesado {file_name}"
+        commit_message = f"chore(bronze): auto-agregar log parseado {file_name}"
         subprocess.run(["git", "commit", "-m", commit_message], cwd=repo_dir, check=True)
         
-        # 3. git push para sincronizar con GitHub
+        # 3. git push para enviar los cambios a GitHub
         subprocess.run(["git", "push"], cwd=repo_dir, check=True)
-        
-        print(f"¡Git commit y push realizados con éxito para {file_name}!")
+        print(f"¡Ciclo de Git (Pull, Commit, Push) completado con éxito para {file_name}!")
         
     except subprocess.CalledProcessError as e:
-        print(f"Aviso de Git (es posible que no hubiera cambios nuevos o falte autenticación en push): {e}")
+        print(f"Aviso de Git durante la sincronización: {e}")
     except Exception as e:
         traceback.print_exc()
 
 @app.post("/api/analyze")
 async def analyze_log(file: UploadFile = File(...)):
+    temp_zevtc_path = None
     try:
-        contents = await file.read()
         file_name = file.filename or "unknown.zevtc"
+        contents = await file.read()
         
-        json_file_name = file_name.replace(".zevtc", "_analysis.json")
-        local_file_path = os.path.join(LOCAL_BRONZE_DIR, json_file_name)
-
-        # Guardar archivo localmente
-        with open(local_file_path, "wb") as f:
+        # 1. Guardar temporalmente el .zevtc recibido en la carpeta bronze_data
+        temp_zevtc_path = os.path.join(LOCAL_BRONZE_DIR, file_name)
+        with open(temp_zevtc_path, "wb") as f:
             f.write(contents)
 
-        # Ejecutar commit y push automático
-        git_commit_and_push(json_file_name)
+        print(f"Ejecutando Elite Insights CLI para: {file_name}")
+        
+        # 2. Llamar al CLI de Elite Insights para parsear el archivo a JSON
+        result = subprocess.run(
+            [PARSER_EXE, temp_zevtc_path],
+            capture_output=True,
+            text=True,
+            creationflags=subprocess.CREATE_NO_WINDOW  # Oculta la ventana de consola en Windows
+        )
+
+        if result.returncode != 0:
+            raise HTTPException(
+                status_code=500, 
+                detail=f"Error en Elite Insights: {result.stderr or result.stdout}"
+            )
+
+        # 3. Eliminar el archivo binario .zevtc temporal
+        if os.path.exists(temp_zevtc_path):
+            os.remove(temp_zevtc_path)
+
+        # 4. Localizar el archivo .json recién generado en la carpeta bronze_data
+        json_files = [f for f in os.listdir(LOCAL_BRONZE_DIR) if f.endswith(".json")]
+        if not json_files:
+            raise HTTPException(
+                status_code=500, 
+                detail="Elite Insights finalizó pero no se encontró ningún archivo .json."
+            )
+
+        latest_json = max(
+            [os.path.join(LOCAL_BRONZE_DIR, f) for f in os.listdir(LOCAL_BRONZE_DIR) if f.endswith(".json")],
+            key=os.path.getctime
+        )
+        final_json_name = os.path.basename(latest_json)
+
+        # 5. Ejecutar el flujo completo de Git (Pull -> Commit -> Push)
+        git_pull_commit_and_push(final_json_name)
 
         return {
             "status": "success",
-            "message": "Archivo procesado, guardado, commiteado y sincronizado con GitHub con éxito.",
-            "file": json_file_name
+            "message": "Log parseado, sincronizado (Pull/Commit/Push) y respaldado en GitHub correctamente.",
+            "file": final_json_name
         }
 
     except Exception as e:
+        if temp_zevtc_path and os.path.exists(temp_zevtc_path):
+            os.remove(temp_zevtc_path)
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
