@@ -30,10 +30,13 @@ def git_commit_and_push(file_name: str):
         commit_message = f"chore(bronze): auto-agregar log procesado {file_name}"
         subprocess.run(["git", "commit", "-m", commit_message], cwd=repo_dir, check=True)
         
-        print(f"¡Git commit realizado con éxito para {file_name}!")
+        # 3. git push para sincronizar con GitHub
+        subprocess.run(["git", "push"], cwd=repo_dir, check=True)
+        
+        print(f"¡Git commit y push realizados con éxito para {file_name}!")
         
     except subprocess.CalledProcessError as e:
-        print(f"Aviso de Git (posiblemente sin cambios nuevos): {e}")
+        print(f"Aviso de Git (es posible que no hubiera cambios nuevos o falte autenticación en push): {e}")
     except Exception as e:
         traceback.print_exc()
 
@@ -50,12 +53,12 @@ async def analyze_log(file: UploadFile = File(...)):
         with open(local_file_path, "wb") as f:
             f.write(contents)
 
-        # Ejecutar commit automático
+        # Ejecutar commit y push automático
         git_commit_and_push(json_file_name)
 
         return {
             "status": "success",
-            "message": "Archivo procesado, guardado y commiteado en Git automáticamente.",
+            "message": "Archivo procesado, guardado, commiteado y sincronizado con GitHub con éxito.",
             "file": json_file_name
         }
 
