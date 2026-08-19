@@ -1,4 +1,5 @@
 import os
+import json
 import subprocess
 import traceback
 from fastapi import FastAPI, File, UploadFile, HTTPException
@@ -18,27 +19,39 @@ app.add_middleware(
 LOCAL_BRONZE_DIR = "databricks/bronze_data"
 os.makedirs(LOCAL_BRONZE_DIR, exist_ok=True)
 
-# ⚠️ Actualiza esta ruta con la ubicación exacta de tu ejecutable CLI en tu PC
+# Ruta exacta de tu CLI y su carpeta de configuración (.conf)
 PARSER_EXE = r"C:\Users\andpa\gw2-wvw-analytics\tools\EliteInsights\GW2EICLI\GuildWars2EliteInsights-CLI.exe"
+CLI_DIR = os.path.dirname(PARSER_EXE)
+SETTINGS_PATH = os.path.join(CLI_DIR, "settings.conf")
 
-def git_pull_commit_and_push(file_name: str):
+def git_pull_commit_and_push(file_path: str):
+    repo_dir = Path(__file__).resolve().parent.parent
+    file_name = os.path.basename(file_path)
     try:
-        repo_dir = Path(__file__).resolve().parent.parent
+        # 0. Guardar temporalmente cualquier cambio local o archivo no rastreado
+        subprocess.run(["git", "stash", "-u"], cwd=repo_dir, capture_output=True)
         
-        # 0. git pull para sincronizar cambios remotos antes de trabajar
+        # 1. Sincronizar cambios remotos de forma segura
         subprocess.run(["git", "pull", "--rebase"], cwd=repo_dir, check=True)
         
-        # 1. git add del archivo JSON generado
-        subprocess.run(["git", "add", f"databricks/bronze_data/{file_name}"], cwd=repo_dir, check=True)
+        # 2. Recuperar los cambios guardados (incluyendo el archivo JSON actual)
+        subprocess.run(["git", "stash", "pop"], cwd=repo_dir, capture_output=True)
         
-        # 2. git commit automático
+        # 3. Agregar el nuevo archivo JSON a Git (asegurando ruta relativa correcta)
+        relative_path = os.path.relpath(file_path, repo_dir).replace("\\", "/")
+        subprocess.run(["git", "add", relative_path], cwd=repo_dir, check=True)
+        
+        # 4. Realizar el commit automático
         commit_message = f"chore(bronze): auto-agregar log parseado {file_name}"
-        subprocess.run(["git", "commit", "-m", commit_message], cwd=repo_dir, check=True)
+        res_commit = subprocess.run(["git", "commit", "-m", commit_message], cwd=repo_dir, capture_output=True, text=True)
         
-        # 3. git push para enviar los cambios a GitHub
-        subprocess.run(["git", "push"], cwd=repo_dir, check=True)
-        print(f"¡Ciclo de Git (Pull, Commit, Push) completado con éxito para {file_name}!")
-        
+        # 5. Enviar los cambios a GitHub si hay un commit válido
+        if res_commit.returncode == 0:
+            subprocess.run(["git", "push"], cwd=repo_dir, check=True)
+            print(f"¡Ciclo de Git (Pull, Commit, Push) completado con éxito para {file_name}!")
+        else:
+            print("Git: El archivo ya estaba commiteado o no hay cambios nuevos pendientes.")
+            
     except subprocess.CalledProcessError as e:
         print(f"Aviso de Git durante la sincronización: {e}")
     except Exception as e:
@@ -48,25 +61,33 @@ def git_pull_commit_and_push(file_name: str):
 async def analyze_log(file: UploadFile = File(...)):
     temp_zevtc_path = None
     try:
+        if not os.path.exists(SETTINGS_PATH):
+            raise HTTPException(
+                status_code=500, 
+                detail="No se encontró el archivo settings.conf en la carpeta del CLI. Por favor genéralo desde la interfaz gráfica de Elite Insights."
+            )
+
         file_name = file.filename or "unknown.zevtc"
         contents = await file.read()
         
-        # 1. Guardar temporalmente el .zevtc recibido en la carpeta bronze_data
+        # 1. Guardar temporalmente el .zevtc en bronze_data
         temp_zevtc_path = os.path.join(LOCAL_BRONZE_DIR, file_name)
         with open(temp_zevtc_path, "wb") as f:
             f.write(contents)
 
         print(f"Ejecutando Elite Insights CLI para: {file_name}")
         
-        # 2. Llamar al CLI de Elite Insights para parsear el archivo a JSON
+        # 2. Ejecutar el CLI usando la configuración oficial (.conf)
         result = subprocess.run(
-            [PARSER_EXE, temp_zevtc_path],
+            [PARSER_EXE, "-c", SETTINGS_PATH, temp_zevtc_path],
             capture_output=True,
             text=True,
-            creationflags=subprocess.CREATE_NO_WINDOW  # Oculta la ventana de consola en Windows
+            creationflags=subprocess.CREATE_NO_WINDOW
         )
 
         if result.returncode != 0:
+            print("STDOUT:", result.stdout)
+            print("STDERR:", result.stderr)
             raise HTTPException(
                 status_code=500, 
                 detail=f"Error en Elite Insights: {result.stderr or result.stdout}"
@@ -76,27 +97,50 @@ async def analyze_log(file: UploadFile = File(...)):
         if os.path.exists(temp_zevtc_path):
             os.remove(temp_zevtc_path)
 
-        # 4. Localizar el archivo .json recién generado en la carpeta bronze_data
-        json_files = [f for f in os.listdir(LOCAL_BRONZE_DIR) if f.endswith(".json")]
-        if not json_files:
+        # 4. Analizar el stdout del CLI para extraer el archivo JSON generado de forma oficial
+        generated_json_path = None
+        for line in result.stdout.splitlines():
+            if line.startswith("Processed - "):
+                try:
+                    json_data = json.loads(line[len("Processed - "):])
+                    for gen_file in json_data.get("generatedFiles", []):
+                        if gen_file.endswith(".json"):
+                            generated_json_path = gen_file
+                            break
+                except Exception:
+                    pass
+
+        # Si por alguna razón no vino en el stdout, lo buscamos en bronze_data por extensión
+        if not generated_json_path or not os.path.exists(generated_json_path):
+            all_json_files = [
+                os.path.join(LOCAL_BRONZE_DIR, f) 
+                for f in os.listdir(LOCAL_BRONZE_DIR) 
+                if f.endswith(".json") and not f.endswith((".deps.json", ".runtimeconfig.json"))
+            ]
+            if all_json_files:
+                generated_json_path = max(all_json_files, key=os.path.getctime)
+
+        if not generated_json_path or not os.path.exists(generated_json_path):
             raise HTTPException(
                 status_code=500, 
-                detail="Elite Insights finalizó pero no se encontró ningún archivo .json."
+                detail=f"El CLI finalizó pero no se generó ningún archivo JSON de combate. Salida: {result.stdout}"
             )
 
-        latest_json = max(
-            [os.path.join(LOCAL_BRONZE_DIR, f) for f in os.listdir(LOCAL_BRONZE_DIR) if f.endswith(".json")],
-            key=os.path.getctime
-        )
-        final_json_name = os.path.basename(latest_json)
+        # 5. Limpiar cualquier archivo .html o auxiliar sobrante en bronze_data
+        for f in os.listdir(LOCAL_BRONZE_DIR):
+            if f.endswith((".html", ".log")) and not f.endswith(".json"):
+                try:
+                    os.remove(os.path.join(LOCAL_BRONZE_DIR, f))
+                except Exception:
+                    pass
 
-        # 5. Ejecutar el flujo completo de Git (Pull -> Commit -> Push)
-        git_pull_commit_and_push(final_json_name)
+        # 6. Sincronizar automáticamente con Git (Pull -> Commit -> Push)
+        git_pull_commit_and_push(generated_json_path)
 
         return {
             "status": "success",
-            "message": "Log parseado, sincronizado (Pull/Commit/Push) y respaldado en GitHub correctamente.",
-            "file": final_json_name
+            "message": "Log parseado a JSON, sincronizado y respaldado en GitHub correctamente.",
+            "file": os.path.basename(generated_json_path)
         }
 
     except Exception as e:
