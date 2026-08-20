@@ -17,7 +17,9 @@ app.add_middleware(
 )
 
 LOCAL_BRONZE_DIR = "databricks/bronze_data"
+LOCAL_GOLD_DIR = "databricks/gold_data"
 os.makedirs(LOCAL_BRONZE_DIR, exist_ok=True)
+os.makedirs(LOCAL_GOLD_DIR, exist_ok=True)
 
 # Ruta exacta de tu CLI y su carpeta de configuración (.conf)
 PARSER_EXE = r"C:\Users\andpa\gw2-wvw-analytics\tools\EliteInsights\GW2EICLI\GuildWars2EliteInsights-CLI.exe"
@@ -56,6 +58,29 @@ def git_pull_commit_and_push(file_path: str):
         print(f"Aviso de Git durante la sincronización: {e}")
     except Exception as e:
         traceback.print_exc()
+
+def load_gold_metrics():
+    """Lee y carga los JSONs procesados de la capa Gold para enviarlos al frontend"""
+    gold_data = {}
+    files_to_load = {
+        "summary": "wvw_player_stats_summary.json",
+        "professions": "wvw_profession_performance.json",
+        "encounters": "wvw_encounter_summary.json"
+    }
+    
+    for key, filename in files_to_load.items():
+        file_path = os.path.join(LOCAL_GOLD_DIR, filename)
+        if os.path.exists(file_path):
+            try:
+                with open(file_path, "r", encoding="utf-8") as f:
+                    gold_data[key] = json.load(f)
+            except Exception as e:
+                print(f"Error leyendo {filename}: {e}")
+                gold_data[key] = []
+        else:
+            gold_data[key] = []
+            
+    return gold_data
 
 @app.post("/api/analyze")
 async def analyze_log(file: UploadFile = File(...)):
@@ -137,10 +162,14 @@ async def analyze_log(file: UploadFile = File(...)):
         # 6. Sincronizar automáticamente con Git (Pull -> Commit -> Push)
         git_pull_commit_and_push(generated_json_path)
 
+        # 7. Cargar las métricas calculadas de la capa Gold para entregarlas al frontend
+        gold_metrics = load_gold_metrics()
+
         return {
             "status": "success",
-            "message": "Log parseado a JSON, sincronizado y respaldado en GitHub correctamente.",
-            "file": os.path.basename(generated_json_path)
+            "message": "Log parseado a JSON, sincronizado y métricas Gold cargadas correctamente.",
+            "file": os.path.basename(generated_json_path),
+            "data": gold_metrics
         }
 
     except Exception as e:
