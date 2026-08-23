@@ -3,29 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WvW Combat Analytics</title>
+    <title>WvW Combat Analytics Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="glass-panel">
-        <h1>WvW Analytics</h1>
-        <p>Sube tu archivo de Arcdps (.zevtc) para analizar la pelea</p>
-        
-        <form id="uploadForm">
-            <input type="file" id="logFile" accept=".zevtc,.evtc" required>
-            <button type="submit" id="submitBtn">Analizar Log</button>
-        </form>
 
-        <!-- Contenedor de la barra de progreso -->
-        <div id="progressContainer" style="display: none; width: 100%; margin-top: 20px;">
-            <div style="background: rgba(255, 255, 255, 0.1); border-radius: 8px; overflow: hidden; height: 10px; width: 100%;">
-                <div id="progressBar" style="background: linear-gradient(90deg, #8b5cf6, #c084fc); width: 0%; height: 100%; transition: width 0.1s ease;"></div>
-            </div>
-            <p id="progressText" style="color: #cbd5e1; font-size: 0.85rem; margin-top: 8px; text-align: center;">Subiendo: 0%</p>
+    <!-- HEADER / ENCABEZADO -->
+    <header class="dashboard-header">
+        <div class="header-content">
+            <h1>⚔️ WvW Analytics Dashboard</h1>
+            <p>Guild Wars 2 Combat Performance Metrics (Medallion Architecture)</p>
         </div>
+    </header>
 
-        <div id="statusMessage" style="margin-top: 10px;"></div>
-    </div>
+    <!-- MENÚ DE PESTAÑAS / NAVEGACIÓN -->
+    <nav class="nav-tabs-container">
+        <button class="tab-btn active" onclick="switchTab(event, 'tab-upload')">📤 Cargar en Vivo</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-history')">📊 Estadísticas Gold (Histórico)</button>
+    </nav>
+
+    <!-- BODY / CONTENIDO PRINCIPAL -->
+    <main class="dashboard-main">
+
+        <!-- PESTAÑA 1: Carga en Vivo (FastAPI) -->
+        <section id="tab-upload" class="tab-content active">
+            <div class="glass-panel">
+                <h2>Análisis en Tiempo Real</h2>
+                <p>Sube tu archivo de ArcDPS (.zevtc) para procesar contra el backend.</p>
+                
+                <form id="uploadForm">
+                    <input type="file" id="logFile" accept=".zevtc,.evtc" required>
+                    <button type="submit" id="submitBtn" class="primary-btn">Analizar Log</button>
+                </form>
+
+                <!-- Barra de progreso -->
+                <div id="progressContainer" style="display: none; width: 100%; margin-top: 20px;">
+                    <div style="background: rgba(255, 255, 255, 0.1); border-radius: 8px; overflow: hidden; height: 10px; width: 100%;">
+                        <div id="progressBar" style="background: linear-gradient(90deg, #8b5cf6, #c084fc); width: 0%; height: 100%; transition: width 0.1s ease;"></div>
+                    </div>
+                    <p id="progressText" style="color: #cbd5e1; font-size: 0.85rem; margin-top: 8px; text-align: center;">Subiendo: 0%</p>
+                </div>
+
+                <div id="statusMessage" style="margin-top: 10px;"></div>
+                
+                <!-- Resultados en tiempo real -->
+                <div id="results-container"></div>
+            </div>
+        </section>
+
+        <!-- PESTAÑA 2: Estadísticas Históricas (Databricks Gold JSONs) -->
+        <section id="tab-history" class="tab-content">
+            <div class="glass-panel">
+                <h2>📈 Capa Gold - Historial de Combates</h2>
+                <p>Datos procesados previamente y sincronizados desde Databricks.</p>
+                
+                <!-- Contenedores para las tablas Gold -->
+                <div id="container-player-dps"></div>
+                <div id="container-squad-summary"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER / PIE DE PÁGINA -->
+    <footer class="dashboard-footer">
+        <p>WvW Analytics Platform — Diseñado con fines de ingeniería de datos y rendimiento de escuadra.</p>
+    </footer>
 
     <script src="app.js"></script>
 </body>
