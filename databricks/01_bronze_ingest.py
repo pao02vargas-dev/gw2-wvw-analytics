@@ -14,7 +14,7 @@ from pyspark.sql import functions as F  # Funciones de transformación de Spark
 # - comment: descripción visible en el catálogo de datos
 # - table_properties: configuración adicional de la tabla Delta
 @dlt.table(
-    name="wvw_kills_raw",
+    name="gw2_analytics.bronze.wvw_kills_raw",  # ✅ CAMBIO: Schema bronze
     comment="Tabla bronze con datos crudos de combates WvW de Guild Wars 2",
     table_properties={
         "quality": "bronze",  # Etiqueta para identificar la capa medallion

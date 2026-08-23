@@ -12,7 +12,7 @@ from pyspark.sql import functions as F  # Funciones de transformación de Spark
 # Decorador para definir la tabla Silver con validaciones de calidad
 # - @dlt.expect_or_drop: elimina registros que no cumplan las condiciones (data quality)
 @dlt.table(
-    name="wvw_player_encounters",
+    name="gw2_analytics.silver.wvw_player_encounters",  # ✅ CAMBIO: Schema silver
     comment="Métricas de rendimiento por jugador por encuentro (granular)",
     table_properties={
         "quality": "silver",  # Identifica esta tabla como capa Silver
@@ -34,7 +34,7 @@ def wvw_player_encounters():
     """
     
     # Leer datos de Bronze y explotar jugadores (un registro por jugador)
-    bronze_df = dlt.read("wvw_kills_raw")
+    bronze_df = spark.readStream.table("gw2_analytics.bronze.wvw_kills_raw")  # ✅ CAMBIO: Fully-qualified name
     
     return (
         bronze_df

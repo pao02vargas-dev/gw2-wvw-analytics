@@ -5,40 +5,48 @@
 # y dashboards desde la tabla Silver granular
 # 
 # Este archivo define 5 tablas Gold, cada una con una granularidad diferente:
-# 1. wvw_player_stats_daily - Performance diaria por jugador
-# 2. wvw_player_stats_summary - Resumen rolling 30 días (leaderboards)
-# 3. wvw_profession_performance - Meta analysis por clase
-# 4. wvw_squad_composition - Balance y composición por grupo
-# 5. wvw_encounter_summary - Análisis de dificultad por encuentro
+# 1. wvw_player_stats_daily - Performance diaria por jugador (HISTÓRICA con REPLACE WHERE)
+# 2. wvw_player_stats_summary - Resumen rolling 30 días (Materialized View)
+# 3. wvw_profession_performance - Meta analysis por clase (HISTÓRICA con REPLACE WHERE)
+# 4. wvw_squad_composition - Balance y composición por grupo (HISTÓRICA con REPLACE WHERE)
+# 5. wvw_encounter_summary - Análisis de dificultad por encuentro (HISTÓRICA append-only)
 # =============================================================================
 
 # Importaciones para agregaciones Gold
-import dlt  # Framework de Spark Declarative Pipelines (DLT)
+from pyspark import pipelines as dp  # Framework de Spark Declarative Pipelines (nuevo)
+import dlt  # Mantener por compatibilidad con expect decorators
 from pyspark.sql import functions as F  # Funciones de agregación y transformación
 
 # =============================================================================
 # GOLD TABLE 1: wvw_player_stats_daily
-# Agregación diaria por jugador
+# Agregación diaria por jugador (HISTÓRICA)
 # =============================================================================
 
-@dlt.table(
-    name="wvw_player_stats_daily",
+@dp.table(
+    name="gw2_analytics.gold.wvw_player_stats_daily",
     comment="Estadísticas diarias agregadas por jugador",
     table_properties={
         "quality": "gold",  # Identifica esta tabla como capa Gold
-        "pipelines.autoOptimize.managed": "true"  # Optimización automática de archivos
-    }
+        "pipelines.autoOptimize.managed": "true",  # Optimización automática de archivos
+        "pipelines.reset.allowed": "false"  # Bloquea full refresh para proteger historial
+    },
+    replace_where="encounter_date >= date_add(current_date(), -7)"  # Recomputa solo últimos 7 días
 )
 def wvw_player_stats_daily():
     """
-    Agregación diaria por jugador.
+    Agregación diaria por jugador (HISTÓRICA).
     
     Granularidad: Una fila por jugador por día
     Propósito: Análisis de tendencias diarias, mejoras individuales y comparación temporal
     Uso típico: Dashboards de progreso personal, tracking diario
+    
+    IMPORTANTE: Esta es una Streaming Table con REPLACE WHERE.
+    - Acumula historial indefinidamente
+    - Cada refresh recomputa solo los últimos 7 días
+    - El resto del historial permanece intacto
     """
     # Leer datos granulares desde Silver
-    silver_df = dlt.read("wvw_player_encounters")
+    silver_df = spark.read.table("gw2_analytics.silver.wvw_player_encounters")
     
     return (
         silver_df
@@ -127,11 +135,11 @@ def wvw_player_stats_daily():
 
 # =============================================================================
 # GOLD TABLE 2: wvw_player_stats_summary
-# Resumen rolling 30 días por jugador (leaderboards)
+# Resumen rolling 30 días por jugador (leaderboards) - Materialized View
 # =============================================================================
 
-@dlt.table(
-    name="wvw_player_stats_summary",
+@dp.materialized_view(
+    name="gw2_analytics.gold.wvw_player_stats_summary",
     comment="Resumen de performance rolling 30 días por jugador",
     table_properties={
         "quality": "gold",
@@ -140,13 +148,16 @@ def wvw_player_stats_daily():
 )
 def wvw_player_stats_summary():
     """
-    Rolling 30-day summary por jugador.
+    Rolling 30-day summary por jugador (MATERIALIZED VIEW).
     
     Granularidad: Una fila por jugador (toda su actividad reciente)
     Propósito: Leaderboards, rankings globales, identificación de top performers
     Uso típico: Tablas de clasificación, comparación entre jugadores
+    
+    NOTA: Esta permanece como Materialized View porque debe recomputarse
+    completamente cada vez (ventana rolling de 30 días).
     """
-    silver_df = dlt.read("wvw_player_encounters")
+    silver_df = spark.read.table("gw2_analytics.silver.wvw_player_encounters")
     
     # === FILTRO TEMPORAL ===
     # Calcular la fecha de hace 30 días desde hoy
@@ -201,26 +212,33 @@ def wvw_player_stats_summary():
 
 # =============================================================================
 # GOLD TABLE 3: wvw_profession_performance
-# Agregación diaria por profesión (meta analysis)
+# Agregación diaria por profesión (meta analysis) - HISTÓRICA
 # =============================================================================
 
-@dlt.table(
-    name="wvw_profession_performance",
+@dp.table(
+    name="gw2_analytics.gold.wvw_profession_performance",
     comment="Performance diaria agregada por profesión de GW2",
     table_properties={
         "quality": "gold",
-        "pipelines.autoOptimize.managed": "true"
-    }
+        "pipelines.autoOptimize.managed": "true",
+        "pipelines.reset.allowed": "false"  # Bloquea full refresh para proteger historial
+    },
+    replace_where="encounter_date >= date_add(current_date(), -7)"  # Recomputa solo últimos 7 días
 )
 def wvw_profession_performance():
     """
-    Agregación diaria por profesión.
+    Agregación diaria por profesión (HISTÓRICA).
     
     Granularidad: Una fila por profesión por día
     Propósito: Análisis del meta-game, balance entre clases, identificar profesiones dominantes
     Uso típico: Reportes de balance, análisis de composición meta, guías de clase
+    
+    IMPORTANTE: Esta es una Streaming Table con REPLACE WHERE.
+    - Acumula historial indefinidamente
+    - Cada refresh recomputa solo los últimos 7 días
+    - El resto del historial permanece intacto
     """
-    silver_df = dlt.read("wvw_player_encounters")
+    silver_df = spark.read.table("gw2_analytics.silver.wvw_player_encounters")
     
     return (
         silver_df
@@ -261,26 +279,33 @@ def wvw_profession_performance():
 
 # =============================================================================
 # GOLD TABLE 4: wvw_squad_composition
-# Agregación diaria por squad/grupo
+# Agregación diaria por squad/grupo - HISTÓRICA
 # =============================================================================
 
-@dlt.table(
-    name="wvw_squad_composition",
+@dp.table(
+    name="gw2_analytics.gold.wvw_squad_composition",
     comment="Composición y performance diaria por squad group",
     table_properties={
         "quality": "gold",
-        "pipelines.autoOptimize.managed": "true"
-    }
+        "pipelines.autoOptimize.managed": "true",
+        "pipelines.reset.allowed": "false"  # Bloquea full refresh para proteger historial
+    },
+    replace_where="encounter_date >= date_add(current_date(), -7)"  # Recomputa solo últimos 7 días
 )
 def wvw_squad_composition():
     """
-    Agregación diaria por squad group.
+    Agregación diaria por squad group (HISTÓRICA).
     
     Granularidad: Una fila por grupo por día
     Propósito: Analiza balance del squad, composición, y si hay suficiente soporte vs DPS
     Uso típico: Optimización de composición, identificar grupos desbalanceados
+    
+    IMPORTANTE: Esta es una Streaming Table con REPLACE WHERE.
+    - Acumula historial indefinidamente
+    - Cada refresh recomputa solo los últimos 7 días
+    - El resto del historial permanece intacto
     """
-    silver_df = dlt.read("wvw_player_encounters")
+    silver_df = spark.read.table("gw2_analytics.silver.wvw_player_encounters")
     
     return (
         silver_df
@@ -333,11 +358,11 @@ def wvw_squad_composition():
 
 # =============================================================================
 # GOLD TABLE 5: wvw_encounter_summary
-# Agregación por encounter (análisis de dificultad)
+# Agregación por encounter (análisis de dificultad) - HISTÓRICA APPEND-ONLY
 # =============================================================================
 
-@dlt.table(
-    name="wvw_encounter_summary",
+@dp.table(
+    name="gw2_analytics.gold.wvw_encounter_summary",
     comment="Resumen por encuentro - análisis de dificultad y desempeño grupal",
     table_properties={
         "quality": "gold",
@@ -346,13 +371,18 @@ def wvw_squad_composition():
 )
 def wvw_encounter_summary():
     """
-    Agregación por encounter.
+    Agregación por encounter (HISTÓRICA - APPEND ONLY).
     
     Granularidad: Una fila por encounter (combate individual)
     Propósito: Analiza dificultad del combate, performance del grupo completo, coordinación
     Uso típico: Post-mortem de combates, identificar encuentros difíciles, evaluar coordinación
+    
+    IMPORTANTE: Esta es una Streaming Table simple (append-only).
+    - Cada encounter es único y nunca se actualiza
+    - Solo se agregan nuevos encounters, nunca se recomputan
+    - Historial completo preservado indefinidamente
     """
-    silver_df = dlt.read("wvw_player_encounters")
+    silver_df = spark.read.table("gw2_analytics.silver.wvw_player_encounters")
     
     return (
         silver_df
@@ -400,88 +430,3 @@ def wvw_encounter_summary():
         # Ordena por fecha y hora más recientes primero
         .orderBy(F.desc("encounter_date"), F.desc("encounter_time"))
     )
-
-    # =====================================================================
-#  Export ALL Gold Tables to JSON for Git (gold_data)
-# =====================================================================
-import json
-import os
-
-print("🔵 Gold JSON Export - START: Exporting ALL Gold tables to gold_data directory...")
-
-try:
-    # 1. Extraer TODAS las 5 tablas Gold a Pandas
-    print("   📊 Fetching Gold tables...")
-    df_daily = spark.sql("SELECT * FROM gw2_analytics.gold.wvw_player_stats_daily").toPandas()
-    df_summary = spark.sql("SELECT * FROM gw2_analytics.gold.wvw_player_stats_summary").toPandas()
-    df_prof = spark.sql("SELECT * FROM gw2_analytics.gold.wvw_profession_performance").toPandas()
-    df_squad = spark.sql("SELECT * FROM gw2_analytics.gold.wvw_squad_composition").toPandas()
-    df_encounter = spark.sql("SELECT * FROM gw2_analytics.gold.wvw_encounter_summary").toPandas()
-    
-    all_dfs = [df_daily, df_summary, df_prof, df_squad, df_encounter]
-    print(f"   ✅ Fetched {len(all_dfs)} tables")
-    
-    # Convert date and datetime columns to strings for JSON serialization
-    print("   🔄 Converting date/datetime columns to strings...")
-    for df in all_dfs:
-        # Get column dtypes once before loop (avoid SCPAP001 lint warning)
-        datetime_cols = df.select_dtypes(include=['object', 'datetime64']).columns
-        for col in datetime_cols:
-            df[col] = df[col].astype(str)
-
-    # 2. Definir el diccionario con TODAS las tablas
-    gold_exports = {
-        "wvw_player_stats_daily.json": df_daily.to_dict(orient="records"),
-        "wvw_player_stats_summary.json": df_summary.to_dict(orient="records"),
-        "wvw_profession_performance.json": df_prof.to_dict(orient="records"),
-        "wvw_squad_composition.json": df_squad.to_dict(orient="records"),
-        "wvw_encounter_summary.json": df_encounter.to_dict(orient="records")
-    }
-    
-    print(f"   📦 Prepared {len(gold_exports)} JSON files")
-
-    # 3. Ruta correcta del repositorio Git en Workspace/Users
-    repo_path = "/Workspace/Users/pao02.vargas@gmail.com/gw2-wvw-analytics/docs/data/"
-    fallback_path = "/Workspace/Users/pao02.vargas@gmail.com/gold_data_backup/"
-    
-    # Try repo path first
-    export_dir = repo_path
-    try:
-        print(f"   🔍 Attempting to write to Git repo: {repo_path}")
-        # Test if we can write to repo path
-        test_path = f"{repo_path}.test"
-        dbutils.fs.put(test_path, "test", overwrite=True)
-        dbutils.fs.rm(test_path)
-        print("   ✅ Git repo path is accessible!")
-    except Exception as e:
-        print(f"   ⚠️  Git repo path not accessible: {str(e)}")
-        print(f"   🔄 Falling back to workspace: {fallback_path}")
-        export_dir = fallback_path
-    
-    # Create directory
-    try:
-        dbutils.fs.mkdirs(export_dir)
-    except Exception:
-        pass  # Directory may already exist
-
-    # 4. Guardar cada tabla como archivo JSON
-    print(f"\n   💾 Writing JSON files to: {export_dir}")
-    for filename, data in gold_exports.items():
-        file_path = f"{export_dir}{filename}"
-        
-        # Convertir a JSON bonito y escribir usando dbutils
-        json_string = json.dumps(data, ensure_ascii=False, indent=2)
-        dbutils.fs.put(file_path, json_string, overwrite=True)
-        
-        print(f"   ✅ {filename}: {len(data)} registros")
-
-    print(f"\n✅ Gold JSON Export - SUCCESS!")
-    print(f"📂 Location: {export_dir}")
-    
-    if export_dir == fallback_path:
-        print(f"\n⚠️  NOTA: Archivos guardados en workspace, no en el repo de Git.")
-        print(f"   Para copiarlos al repo, ejecuta estos comandos en una celda shell:")
-        print(f"   cp {fallback_path}*.json {repo_path}")
-
-except Exception as e:
-    print(f"❌ Gold JSON Export - ERROR: Falla al exportar a gold_data: {str(e)}")
