@@ -3,7 +3,7 @@ body {
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     /* Valores más altos hacen que la capa oscura sea más densa y la imagen se "degrade" hacia la oscuridad */
-    background: linear-gradient(rgba(15, 12, 22, 0.90), rgba(26, 15, 20, 0.96)), 
+    background: linear-gradient(rgba(15, 12, 22, 0.85), rgba(26, 15, 20, 0.90)), 
                 url('./imagenes/fondo.jpg') no-repeat center center fixed;
     background-size: cover;
     color: #f3f4f6;
