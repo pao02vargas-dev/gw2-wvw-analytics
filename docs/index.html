@@ -10,13 +10,13 @@
 
     <!-- HEADER / ENCABEZADO -->
     <header class="dashboard-header">
-        <div class="header-content">
-            <h1>⚔️ WvW Analytics Dashboard</h1>
-            <p>Guild Wars 2 Combat Performance Metrics (Medallion Architecture)</p>
+        <div class="logo-container">
+            <img src="./imagenes/640px-Nuevo_logo_GW2.png" alt="Guild Wars 2 Logo" class="gw2-logo">
         </div>
+        <p class="subtitle">WvW Combat Performance</p>
     </header>
 
-    <!-- MENÚ DE PESTAÑAS / NAVEGACIÓN -->
+    <!-- MENÚ DE PESTAÑAS NAVEGABLES -->
     <nav class="nav-tabs-container">
         <button class="tab-btn active" onclick="switchTab(event, 'tab-upload')">📤 Cargar en Vivo</button>
         <button class="tab-btn" onclick="switchTab(event, 'tab-history')">📊 Estadísticas Gold (Histórico)</button>
@@ -25,39 +25,35 @@
     <!-- BODY / CONTENIDO PRINCIPAL -->
     <main class="dashboard-main">
 
-        <!-- PESTAÑA 1: Carga en Vivo (FastAPI) -->
+        <!-- PESTAÑA 1: Carga en Vivo -->
         <section id="tab-upload" class="tab-content active">
             <div class="glass-panel">
-                <h2>Análisis en Tiempo Real</h2>
-                <p>Sube tu archivo de ArcDPS (.zevtc) para procesar contra el backend.</p>
+                <h2>Análisis de Encuentro</h2>
+                <p>Sube tu archivo de ArcDPS (.zevtc) para procesar.</p>
                 
                 <form id="uploadForm">
                     <input type="file" id="logFile" accept=".zevtc,.evtc" required>
-                    <button type="submit" id="submitBtn" class="primary-btn">Analizar Log</button>
+                    <button type="submit" id="submitBtn">Analizar Log</button>
                 </form>
 
-                <!-- Barra de progreso -->
                 <div id="progressContainer" style="display: none; width: 100%; margin-top: 20px;">
                     <div style="background: rgba(255, 255, 255, 0.1); border-radius: 8px; overflow: hidden; height: 10px; width: 100%;">
-                        <div id="progressBar" style="background: linear-gradient(90deg, #8b5cf6, #c084fc); width: 0%; height: 100%; transition: width 0.1s ease;"></div>
+                        <div id="progressBar" style="background: linear-gradient(90deg, #d97706, #f59e0b); width: 0%; height: 100%; transition: width 0.1s ease;"></div>
                     </div>
                     <p id="progressText" style="color: #cbd5e1; font-size: 0.85rem; margin-top: 8px; text-align: center;">Subiendo: 0%</p>
                 </div>
 
                 <div id="statusMessage" style="margin-top: 10px;"></div>
-                
-                <!-- Resultados en tiempo real -->
                 <div id="results-container"></div>
             </div>
         </section>
 
-        <!-- PESTAÑA 2: Estadísticas Históricas (Databricks Gold JSONs) -->
+        <!-- PESTAÑA 2: Estadísticas Históricas -->
         <section id="tab-history" class="tab-content">
-            <div class="glass-panel">
+            <div class="glass-panel wide-panel">
                 <h2>📈 Capa Gold - Historial de Combates</h2>
                 <p>Datos procesados previamente y sincronizados desde Databricks.</p>
                 
-                <!-- Contenedores para las tablas Gold -->
                 <div id="container-player-dps"></div>
                 <div id="container-squad-summary"></div>
             </div>
@@ -67,7 +63,7 @@
 
     <!-- FOOTER / PIE DE PÁGINA -->
     <footer class="dashboard-footer">
-        <p>WvW Analytics Platform — Diseñado con fines de ingeniería de datos y rendimiento de escuadra.</p>
+        <p>WvW Analytics Platform — Arquitectura Medallion orientada a rendimiento de escuadra.</p>
     </footer>
 
     <script src="app.js"></script>
