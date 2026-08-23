@@ -18,37 +18,29 @@
 
     <!-- MENÚ DE PESTAÑAS NAVEGABLES -->
     <nav class="nav-tabs-container">
-        <button class="tab-btn active" onclick="switchTab(event, 'tab-upload')">📤 Cargar en Vivo</button>
+        <button class="tab-btn active" onclick="switchTab(event, 'tab-upload')">📤 Cargar Log</button>
         <button class="tab-btn" onclick="switchTab(event, 'tab-history')">📊 Estadísticas Gold (Histórico)</button>
     </nav>
 
     <!-- BODY / CONTENIDO PRINCIPAL -->
     <main class="dashboard-main">
 
-        <!-- PESTAÑA 1: Carga en Vivo -->
+        <!-- PESTAÑA 1: Carga de archivo (Batch) - ¡Conservada y lista! -->
         <section id="tab-upload" class="tab-content active">
             <div class="glass-panel">
                 <h2>Análisis de Encuentro</h2>
-                <p>Sube tu archivo de ArcDPS (.zevtc) para procesar.</p>
+                <p>Sube tu archivo de ArcDPS (.zevtc) para procesar por lotes.</p>
                 
                 <form id="uploadForm">
                     <input type="file" id="logFile" accept=".zevtc,.evtc" required>
-                    <button type="submit" id="submitBtn">Analizar Log</button>
+                    <button type="submit" id="submitBtn">Procesar Log</button>
                 </form>
 
-                <div id="progressContainer" style="display: none; width: 100%; margin-top: 20px;">
-                    <div style="background: rgba(255, 255, 255, 0.1); border-radius: 8px; overflow: hidden; height: 10px; width: 100%;">
-                        <div id="progressBar" style="background: linear-gradient(90deg, #d97706, #f59e0b); width: 0%; height: 100%; transition: width 0.1s ease;"></div>
-                    </div>
-                    <p id="progressText" style="color: #cbd5e1; font-size: 0.85rem; margin-top: 8px; text-align: center;">Subiendo: 0%</p>
-                </div>
-
-                <div id="statusMessage" style="margin-top: 10px;"></div>
-                <div id="results-container"></div>
+                <div id="statusMessage" style="margin-top: 15px;"></div>
             </div>
         </section>
 
-        <!-- PESTAÑA 2: Estadísticas Históricas -->
+        <!-- PESTAÑA 2: Estadísticas Históricas (Capa Gold) -->
         <section id="tab-history" class="tab-content">
             <div class="glass-panel wide-panel">
                 <h2>📈 Capa Gold - Historial de Combates</h2>

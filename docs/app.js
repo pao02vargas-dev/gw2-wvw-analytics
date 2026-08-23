@@ -52,7 +52,7 @@ document.getElementById("uploadForm").addEventListener("submit", async function(
             statusMessage.textContent = "¡Éxito! Análisis completado.";
             
             // Renderizar los resultados de la capa Gold en tiempo real
-            mostrarResultadosEnUI(result.data);
+            //mostrarResultadosEnUI(result.data);
         } else {
             statusMessage.style.color = "#ff6b6b";
             statusMessage.textContent = `Error: ${result.detail || "Error en el servidor"}`;
@@ -67,7 +67,7 @@ document.getElementById("uploadForm").addEventListener("submit", async function(
 });
 
 // Función para pintar el resultado en tiempo real (tu función original adaptada)
-function mostrarResultadosEnUI(data) {
+/*function mostrarResultadosEnUI(data) {
     const container = document.getElementById("results-container");
     if (!container) return;
 
@@ -84,9 +84,10 @@ function mostrarResultadosEnUI(data) {
                  </tr>`;
     });
 
-    html += `</table></div>`;
+   html += `</table></div>`;
+
     container.innerHTML = html;
-}
+}*/
 
 // Función genérica para leer tus JSONs exportados de la capa Gold (Databricks)
 async function cargarTablaGold(nombreArchivo, containerId, tituloTabla) {
