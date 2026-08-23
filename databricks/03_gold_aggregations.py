@@ -400,3 +400,88 @@ def wvw_encounter_summary():
         # Ordena por fecha y hora más recientes primero
         .orderBy(F.desc("encounter_date"), F.desc("encounter_time"))
     )
+
+    # =====================================================================
+#  Export ALL Gold Tables to JSON for Git (gold_data)
+# =====================================================================
+import json
+import os
+
+print("🔵 Gold JSON Export - START: Exporting ALL Gold tables to gold_data directory...")
+
+try:
+    # 1. Extraer TODAS las 5 tablas Gold a Pandas
+    print("   📊 Fetching Gold tables...")
+    df_daily = spark.sql("SELECT * FROM gw2_analytics.gold.wvw_player_stats_daily").toPandas()
+    df_summary = spark.sql("SELECT * FROM gw2_analytics.gold.wvw_player_stats_summary").toPandas()
+    df_prof = spark.sql("SELECT * FROM gw2_analytics.gold.wvw_profession_performance").toPandas()
+    df_squad = spark.sql("SELECT * FROM gw2_analytics.gold.wvw_squad_composition").toPandas()
+    df_encounter = spark.sql("SELECT * FROM gw2_analytics.gold.wvw_encounter_summary").toPandas()
+    
+    all_dfs = [df_daily, df_summary, df_prof, df_squad, df_encounter]
+    print(f"   ✅ Fetched {len(all_dfs)} tables")
+    
+    # Convert date and datetime columns to strings for JSON serialization
+    print("   🔄 Converting date/datetime columns to strings...")
+    for df in all_dfs:
+        # Get column dtypes once before loop (avoid SCPAP001 lint warning)
+        datetime_cols = df.select_dtypes(include=['object', 'datetime64']).columns
+        for col in datetime_cols:
+            df[col] = df[col].astype(str)
+
+    # 2. Definir el diccionario con TODAS las tablas
+    gold_exports = {
+        "wvw_player_stats_daily.json": df_daily.to_dict(orient="records"),
+        "wvw_player_stats_summary.json": df_summary.to_dict(orient="records"),
+        "wvw_profession_performance.json": df_prof.to_dict(orient="records"),
+        "wvw_squad_composition.json": df_squad.to_dict(orient="records"),
+        "wvw_encounter_summary.json": df_encounter.to_dict(orient="records")
+    }
+    
+    print(f"   📦 Prepared {len(gold_exports)} JSON files")
+
+    # 3. Ruta correcta del repositorio Git en Workspace/Users
+    repo_path = "/Workspace/Users/pao02.vargas@gmail.com/gw2-wvw-analytics/docs/data/"
+    fallback_path = "/Workspace/Users/pao02.vargas@gmail.com/gold_data_backup/"
+    
+    # Try repo path first
+    export_dir = repo_path
+    try:
+        print(f"   🔍 Attempting to write to Git repo: {repo_path}")
+        # Test if we can write to repo path
+        test_path = f"{repo_path}.test"
+        dbutils.fs.put(test_path, "test", overwrite=True)
+        dbutils.fs.rm(test_path)
+        print("   ✅ Git repo path is accessible!")
+    except Exception as e:
+        print(f"   ⚠️  Git repo path not accessible: {str(e)}")
+        print(f"   🔄 Falling back to workspace: {fallback_path}")
+        export_dir = fallback_path
+    
+    # Create directory
+    try:
+        dbutils.fs.mkdirs(export_dir)
+    except Exception:
+        pass  # Directory may already exist
+
+    # 4. Guardar cada tabla como archivo JSON
+    print(f"\n   💾 Writing JSON files to: {export_dir}")
+    for filename, data in gold_exports.items():
+        file_path = f"{export_dir}{filename}"
+        
+        # Convertir a JSON bonito y escribir usando dbutils
+        json_string = json.dumps(data, ensure_ascii=False, indent=2)
+        dbutils.fs.put(file_path, json_string, overwrite=True)
+        
+        print(f"   ✅ {filename}: {len(data)} registros")
+
+    print(f"\n✅ Gold JSON Export - SUCCESS!")
+    print(f"📂 Location: {export_dir}")
+    
+    if export_dir == fallback_path:
+        print(f"\n⚠️  NOTA: Archivos guardados en workspace, no en el repo de Git.")
+        print(f"   Para copiarlos al repo, ejecuta estos comandos en una celda shell:")
+        print(f"   cp {fallback_path}*.json {repo_path}")
+
+except Exception as e:
+    print(f"❌ Gold JSON Export - ERROR: Falla al exportar a gold_data: {str(e)}")
