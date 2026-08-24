@@ -4,8 +4,6 @@ import subprocess
 import traceback
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
 from pathlib import Path
 
 app = FastAPI(title="GW2 WvW Combat Analytics API")
@@ -17,18 +15,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# --- MONTAR ARCHIVOS ESTÁTICOS Y DATOS PARA EL FRONTEND ---
-# Sirve la interfaz web ubicada en la carpeta 'docs' en la ruta raíz '/'
-app.mount("/static", StaticFiles(directory="docs"), name="static")
-
-# Expone la carpeta data para que el fetch() de app.js lea los JSONs sin errores
-app.mount("/data", StaticFiles(directory="docs/data"), name="data")
-
-@app.get("/")
-def read_index():
-    return FileResponse("docs/index.html")
-# ----------------------------------------------------------
 
 LOCAL_BRONZE_DIR = "databricks/bronze_data"
 LOCAL_GOLD_DIR = "databricks/gold_data"
@@ -77,9 +63,9 @@ def load_gold_metrics():
     """Lee y carga los JSONs procesados de la capa Gold para enviarlos al frontend"""
     gold_data = {}
     files_to_load = {
-        "summary": "www_player_stats_summary.json",
-        "professions": "www_profession_performance.json",
-        "encounters": "www_encounter_summary.json"
+        "summary": "wvw_player_stats_summary.json",
+        "professions": "wvw_profession_performance.json",
+        "encounters": "wvw_encounter_summary.json"
     }
     
     for key, filename in files_to_load.items():
