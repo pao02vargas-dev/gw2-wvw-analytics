@@ -160,7 +160,7 @@ function renderizarTablaHTML(rows, containerId, tituloTabla) {
     }
 
     const columnas = Object.keys(rows[0]);
-    const maxFilas = 50;
+    const maxFilas = 200;
     const filasAMostrar = rows.slice(0, maxFilas);
 
     let html = `<div class="glass-card" style="margin-top: 1.5rem;">
@@ -168,7 +168,7 @@ function renderizarTablaHTML(rows, containerId, tituloTabla) {
                         <h3 class="card-title" style="margin: 0;">${tituloTabla}</h3>
                         <span style="font-size: 0.8rem; color: #94a3b8;">Mostrando ${filasAMostrar.length} de ${rows.length}</span>
                     </div>
-                    <div style="max-height: 350px; overflow-y: auto; overflow-x: auto; border-radius: 8px;">
+                    <div style="max-height: 700px; overflow-y: auto; overflow-x: auto; border-radius: 8px;">
                         <table style="width: 100%; border-collapse: collapse; text-align: left;">
                             <thead style="position: sticky; top: 0; background: rgba(15, 23, 42, 0.95); z-index: 1;">
                                 <tr>`;
