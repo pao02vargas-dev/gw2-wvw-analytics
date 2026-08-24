@@ -95,19 +95,48 @@ function actualizarFiltrosVista() {
     const selectedEncounter = encounterSelect ? encounterSelect.value : "all";
     const searchFilter = playerSearch ? playerSearch.value.toLowerCase() : "";
 
-    // Filtrar el rendimiento diario según encuentro y texto de búsqueda
+    // Obtener la fecha del encuentro seleccionado (si hay uno)
+    let selectedDate = null;
+    if (selectedEncounter !== "all") {
+        const encounter = globalData.encounters.find(e => String(e.encounter_id) === String(selectedEncounter));
+        selectedDate = encounter ? encounter.encounter_date : null;
+    }
+
+    // Filtrar datos por fecha de encuentro y texto de búsqueda
     let filteredDaily = globalData.daily.filter(row => {
-        const matchEnc = selectedEncounter === "all" || String(row.encounter_id) === String(selectedEncounter);
-        const matchSearch = Object.values(row).some(val => String(val).toLowerCase().includes(searchFilter));
+        const matchEnc = selectedEncounter === "all" || (selectedDate && row.encounter_date === selectedDate);
+        const matchSearch = !searchFilter || Object.values(row).some(val => String(val).toLowerCase().includes(searchFilter));
         return matchEnc && matchSearch;
+    });
+    
+    let filteredProfessions = globalData.professions.filter(row => {
+        const matchEnc = selectedEncounter === "all" || (selectedDate && row.encounter_date === selectedDate);
+        return matchEnc;
+    });
+    
+    let filteredSquad = globalData.squad.filter(row => {
+        const matchEnc = selectedEncounter === "all" || (selectedDate && row.encounter_date === selectedDate);
+        return matchEnc;
     });
 
     // Renderizar cada dataset en su contenedor correspondiente
+    // OVERVIEW - Sin filtros de encuentro
     renderizarTablaHTML(globalData.encounters, "container-encounter-overview", "🛡️ Resumen General de Encuentro");
-    renderizarTablaHTML(globalData.squad, "container-squad-analysis", "📊 Análisis y Balance de Escuadra");
+    renderizarTablaHTML(filteredSquad, "container-squad-analysis", `📊 Análisis y Balance de Escuadra [${filteredSquad.length} grupos]`);
+    
+    // COMBAT - Métricas de daño y DPS por profesión (filtrado por encuentro)
+    renderizarTablaHTML(filteredProfessions, "container-combat-stats", `⚔️ Rendimiento de Combate por Profesión [${filteredProfessions.length} registros]`);
+    
+    // SUPPORT - Métricas de support (cleanses, boons) de squad (filtrado por encuentro)
+    renderizarTablaHTML(filteredSquad, "container-support-stats", `💚 Análisis de Support por Squad [${filteredSquad.length} grupos]`);
+    
+    // DEFENSE - Métricas de supervivencia del daily (filtrado por encuentro y búsqueda)
+    renderizarTablaHTML(filteredDaily, "container-defense-stats", `🛡️ Estadísticas Defensivas y Supervivencia [${filteredDaily.length} registros]`);
+    
+    // PERFORMANCE - Detalles de jugadores (filtrado por encuentro y búsqueda)
     renderizarTablaHTML(filteredDaily, "container-player-performance", `🏆 Rendimiento Detallado por Jugador (Daily) [${filteredDaily.length} registros]`);
-    renderizarTablaHTML(globalData.summary, "container-player-summary", "👤 Resumen Histórico de Jugador (Summary)");
-    renderizarTablaHTML(globalData.professions, "container-profession-stats", "⚔️ Estadísticas por Profesión");
+    renderizarTablaHTML(globalData.summary, "container-player-summary", `👤 Resumen Histórico de Jugador (Summary) [${globalData.summary.length} jugadores]`);
+    renderizarTablaHTML(filteredProfessions, "container-profession-stats", `⚔️ Estadísticas por Profesión [${filteredProfessions.length} registros]`);
 }
 
 function renderizarTablaHTML(rows, containerId, tituloTabla) {
