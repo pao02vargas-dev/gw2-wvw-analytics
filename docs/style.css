@@ -220,3 +220,62 @@ tr:hover {
     font-weight: bold;
     margin-bottom: 0.5rem;
 }
+/* ==================================================================
+   ENHANCED VISUAL ELEMENTS - Pills, Progress Bars, Highlights
+   ================================================================== */
+
+/* Stat pills - Visual indicators for metrics (DPS, tiers) */
+.stat-pill {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1px solid;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    transition: all 0.2s ease;
+}
+
+.stat-pill.high {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.4), rgba(139, 195, 74, 0.3));
+    color: #8BC34A;
+    border-color: rgba(76, 175, 80, 0.5);
+}
+
+.stat-pill.medium {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.4), rgba(255, 152, 0, 0.3));
+    color: #FFC107;
+    border-color: rgba(255, 193, 7, 0.5);
+}
+
+.stat-pill.low {
+    background: linear-gradient(135deg, rgba(244, 67, 54, 0.4), rgba(229, 57, 53, 0.3));
+    color: #EF5350;
+    border-color: rgba(244, 67, 54, 0.5);
+}
+
+/* Hover effects for table rows */
+tbody tr {
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+tbody tr:hover {
+    background: linear-gradient(90deg, rgba(212, 175, 55, 0.15), rgba(255, 140, 0, 0.1));
+    transform: translateX(3px);
+}
+
+tbody tr:hover td {
+    color: #FFA500;
+}
+
+/* Strong player names in tables */
+td strong {
+    color: #FFA500;
+    font-weight: bold;
+}
+
+td small {
+    color: #94a3b8;
+    font-size: 0.8rem;
+}
