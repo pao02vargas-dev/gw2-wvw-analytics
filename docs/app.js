@@ -103,20 +103,8 @@ function actualizarFiltrosVista() {
     });
 
     // Renderizar cada dataset en su contenedor correspondiente
-    // OVERVIEW
     renderizarTablaHTML(globalData.encounters, "container-encounter-overview", "🛡️ Resumen General de Encuentro");
     renderizarTablaHTML(globalData.squad, "container-squad-analysis", "📊 Análisis y Balance de Escuadra");
-    
-    // COMBAT - Métricas de daño y DPS por profesión
-    renderizarTablaHTML(globalData.professions, "container-combat-stats", "⚔️ Rendimiento de Combate por Profesión");
-    
-    // SUPPORT - Métricas de support (cleanses, boons) de squad
-    renderizarTablaHTML(globalData.squad, "container-support-stats", "💚 Análisis de Support por Squad");
-    
-    // DEFENSE - Métricas de supervivencia del daily
-    renderizarTablaHTML(filteredDaily, "container-defense-stats", "🛡️ Estadísticas Defensivas y Supervivencia");
-    
-    // PERFORMANCE - Detalles de jugadores
     renderizarTablaHTML(filteredDaily, "container-player-performance", `🏆 Rendimiento Detallado por Jugador (Daily) [${filteredDaily.length} registros]`);
     renderizarTablaHTML(globalData.summary, "container-player-summary", "👤 Resumen Histórico de Jugador (Summary)");
     renderizarTablaHTML(globalData.professions, "container-profession-stats", "⚔️ Estadísticas por Profesión");
