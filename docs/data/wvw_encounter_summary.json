@@ -1,0 +1,19 @@
+[
+  {
+    "encounter_id": 459776,
+    "encounter_date": "2026-08-16",
+    "encounter_time": "2026-08-17 03:35:52",
+    "encounter_duration_minutes": 2.214183333333333,
+    "total_players": 44,
+    "unique_professions": 24,
+    "avg_dps": 1057.0,
+    "total_group_damage": 6177130,
+    "avg_deaths": 0.02,
+    "total_deaths": 1,
+    "avg_stability_uptime": 1.5,
+    "avg_quickness_uptime": 15.2,
+    "avg_cleanses_per_minute": 5.9,
+    "encounter_difficulty": "Hard",
+    "group_coordination": "Needs Work"
+  }
+]
