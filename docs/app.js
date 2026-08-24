@@ -94,10 +94,13 @@ async function cargarTodosLosDatos() {
 
 async function obtenerDatosJson(nombreArchivo) {
     try {
+        // Agregar timestamp para evitar caché del navegador
+        const cacheBuster = `?v=${Date.now()}`;
         console.log(`📚 Intentando cargar: data/${nombreArchivo}`);
-        const response = await fetch(`data/${nombreArchivo}`);
+        const response = await fetch(`data/${nombreArchivo}${cacheBuster}`);
         if (!response.ok) {
             console.error(`❌ Error ${response.status}: data/${nombreArchivo}`);
+            console.error(`   URL intentada: data/${nombreArchivo}${cacheBuster}`);
             return [];
         }
         const data = await response.json();
