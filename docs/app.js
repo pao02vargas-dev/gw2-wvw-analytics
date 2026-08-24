@@ -153,23 +153,56 @@ function actualizarFiltrosVista() {
         return matchEnc;
     });
 
+    console.log('🔍 Datos filtrados:', {
+        daily: filteredDaily.length,
+        professions: filteredProfessions.length,
+        squad: filteredSquad.length,
+        selectedEncounter,
+        selectedDate
+    });
+
     // RENDER - Overview Tab
-    renderPlayerRanking(filteredDaily, "container-encounter-overview", "🏆 Top 10 Jugadores por DPS", 10);
-    renderSquadComposition(filteredSquad, "container-squad-analysis");
+    try {
+        renderPlayerRanking(filteredDaily, "container-encounter-overview", "🏆 Top 10 Jugadores por DPS", 10);
+        renderSquadComposition(filteredSquad, "container-squad-analysis");
+        console.log('✅ Overview rendered');
+    } catch (e) {
+        console.error('❌ Error en Overview:', e);
+    }
     
     // RENDER - Combat Tab
-    renderPlayerCombatStats(filteredDaily, "container-combat-stats");
+    try {
+        renderPlayerCombatStats(filteredDaily, "container-combat-stats");
+        console.log('✅ Combat rendered');
+    } catch (e) {
+        console.error('❌ Error en Combat:', e);
+    }
     
     // RENDER - Support Tab
-    renderSupportStats(filteredDaily, "container-support-stats");
+    try {
+        renderSupportStats(filteredDaily, "container-support-stats");
+        console.log('✅ Support rendered');
+    } catch (e) {
+        console.error('❌ Error en Support:', e);
+    }
     
     // RENDER - Defense Tab
-    renderDefenseStats(filteredDaily, "container-defense-stats");
+    try {
+        renderDefenseStats(filteredDaily, "container-defense-stats");
+        console.log('✅ Defense rendered');
+    } catch (e) {
+        console.error('❌ Error en Defense:', e);
+    }
     
     // RENDER - Performance Tab (detailed table)
-    renderPlayerPerformanceDetailed(filteredDaily, "container-player-performance");
-    renderPlayerSummary(globalData.summary, "container-player-summary");
-    renderProfessionPerformance(filteredProfessions, "container-profession-stats");
+    try {
+        renderPlayerPerformanceDetailed(filteredDaily, "container-player-performance");
+        renderPlayerSummary(globalData.summary, "container-player-summary");
+        renderProfessionPerformance(filteredProfessions, "container-profession-stats");
+        console.log('✅ Performance rendered');
+    } catch (e) {
+        console.error('❌ Error en Performance:', e);
+    }
 }
 
 // ============================================================================
@@ -460,8 +493,10 @@ function renderSupportStats(rows, containerId) {
     
     topSupport.forEach(player => {
         const role = determinarRol(player);
+        const safeName = (player.player_name || '').replace(/'/g, "\\'");
+        const safeProfession = (player.profession || '').replace(/'/g, "\\'");
         html += `
-            <tr style="border-bottom: 1px solid rgba(212, 175, 55, 0.1); cursor: pointer;" onclick="mostrarDetallesJugador('${player.player_name}', '${player.profession}')">
+            <tr style="border-bottom: 1px solid rgba(212, 175, 55, 0.1); cursor: pointer;" onclick="mostrarDetallesJugador('${safeName}', '${safeProfession}')">
                 <td style="padding: 0.75rem;">${formatearNombreJugador(player.player_name, player.profession)}</td>
                 <td style="padding: 0.75rem;"><span class="role-badge ${role.toLowerCase().replace(' ', '-')}">${role}</span></td>
                 <td style="padding: 0.75rem; color: #e2e8f0;">${(player.avg_might_uptime || 0).toFixed(1)}%</td>
