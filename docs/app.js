@@ -47,11 +47,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 async function cargarTodosLosDatos() {
-    globalData.encounters = await obtenerDatosJson("www_encounter_summary.json");
-    globalData.daily = await obtenerDatosJson("www_player_stats_daily.json");
-    globalData.summary = await obtenerDatosJson("www_player_stats_summary.json");
-    globalData.professions = await obtenerDatosJson("www_profession_performance.json");
-    globalData.squad = await obtenerDatosJson("www_squad_composition.json");
+    globalData.encounters = await obtenerDatosJson("wvw_encounter_summary.json");
+    globalData.daily = await obtenerDatosJson("wvw_player_stats_daily.json");
+    globalData.summary = await obtenerDatosJson("wvw_player_stats_summary.json");
+    globalData.professions = await obtenerDatosJson("wvw_profession_performance.json");
+    globalData.squad = await obtenerDatosJson("wvw_squad_composition.json");
 
     poblarSelectorEncuentros();
     actualizarFiltrosVista();
