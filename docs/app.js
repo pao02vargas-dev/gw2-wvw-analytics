@@ -318,34 +318,75 @@ function renderPlayerCombatStats(rows, containerId) {
         return;
     }
     
+    // Calcular métricas agregadas del squad
+    const totalSquadDPS = rows.reduce((sum, p) => sum + (p.avg_dps || 0), 0);
+    const avgPlayerDPS = totalSquadDPS / rows.length;
+    const topPlayer = [...rows].sort((a, b) => (b.avg_dps || 0) - (a.avg_dps || 0))[0];
+    const totalPowerDamage = rows.reduce((sum, p) => sum + (p.total_damage_dealt || 0) * (p.avg_power_damage_pct || 0) / 100, 0);
+    const totalCondiDamage = rows.reduce((sum, p) => sum + (p.total_damage_dealt || 0) * (p.avg_condi_damage_pct || 0) / 100, 0);
+    const totalDamage = totalPowerDamage + totalCondiDamage;
+    const powerPct = totalDamage > 0 ? (totalPowerDamage / totalDamage * 100) : 0;
+    const condiPct = totalDamage > 0 ? (totalCondiDamage / totalDamage * 100) : 0;
+    
     const topDPS = [...rows].sort((a, b) => (b.avg_dps || 0) - (a.avg_dps || 0)).slice(0, 15);
     
     let html = `
+        <!-- Tarjetas de Métricas de Combat -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+            <div class="stat-card">
+                <div class="stat-icon">⚔️</div>
+                <div class="stat-label">TOTAL SQUAD DPS</div>
+                <div class="stat-value">${Math.round(totalSquadDPS).toLocaleString()}</div>
+                <div class="stat-sublabel">Combined damage output</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💥</div>
+                <div class="stat-label">AVERAGE PLAYER DPS</div>
+                <div class="stat-value">${Math.round(avgPlayerDPS)}</div>
+                <div class="stat-sublabel">Per player average</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔥</div>
+                <div class="stat-label">HIGHEST DPS</div>
+                <div class="stat-value">${Math.round(topPlayer?.avg_dps || 0)} (${topPlayer?.player_name || 'N/A'})</div>
+                <div class="stat-sublabel">Peak performer</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-label">POWER VS CONDI</div>
+                <div class="stat-value">${powerPct.toFixed(1)}% / ${condiPct.toFixed(1)}%</div>
+                <div class="stat-sublabel">Damage type distribution</div>
+            </div>
+        </div>
+        
+        <!-- Tabla de Top DPS Players -->
         <div class="glass-card">
-            <h3 class="card-title">⚔️ Top 15 DPS - Estadísticas de Combate</h3>
+            <h3 class="card-title">🔥 Top DPS Players</h3>
             <table style="width: 100%; border-collapse: collapse;">
                 <thead>
                     <tr style="background: rgba(212, 175, 55, 0.2); border-bottom: 2px solid rgba(212, 175, 55, 0.4);">
-                        <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Jugador</th>
+                        <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Player</th>
+                        <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Role</th>
                         <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">DPS</th>
-                        <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Damage Dealt</th>
                         <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Power %</th>
                         <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Condi %</th>
-                        <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">CC (sec)</th>
+                        <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Cleave %</th>
                     </tr>
                 </thead>
                 <tbody>
     `;
     
     topDPS.forEach(player => {
+        const role = determinarRol(player);
+        const cleave = player.avg_cleave_pct || 100;
         html += `
-            <tr style="border-bottom: 1px solid rgba(212, 175, 55, 0.1);">
+            <tr style="border-bottom: 1px solid rgba(212, 175, 55, 0.1); cursor: pointer;" onclick="mostrarDetallesJugador('${player.player_name}', '${player.profession}')">
                 <td style="padding: 0.75rem;">${formatearNombreJugador(player.player_name, player.profession)}</td>
+                <td style="padding: 0.75rem;"><span class="role-badge ${role.toLowerCase().replace(' ', '-')}">${role}</span></td>
                 <td style="padding: 0.75rem;">${crearPill(player.avg_dps || 0, 'dps')}</td>
-                <td style="padding: 0.75rem; color: #e2e8f0;">${(player.total_damage_dealt || 0).toLocaleString()}</td>
                 <td style="padding: 0.75rem; color: #e2e8f0;">${Math.round(player.avg_power_damage_pct || 0)}%</td>
                 <td style="padding: 0.75rem; color: #e2e8f0;">${Math.round(player.avg_condi_damage_pct || 0)}%</td>
-                <td style="padding: 0.75rem; color: #e2e8f0;">${(player.avg_cc_seconds_per_encounter || 0).toFixed(1)}</td>
+                <td style="padding: 0.75rem; color: #e2e8f0;">${cleave.toFixed(1)}%</td>
             </tr>
         `;
     });
@@ -363,32 +404,70 @@ function renderSupportStats(rows, containerId) {
         return;
     }
     
+    // Calcular métricas agregadas de support
+    const avgMight = rows.reduce((sum, p) => sum + (p.avg_might_uptime || 0), 0) / rows.length;
+    const avgQuickness = rows.reduce((sum, p) => sum + (p.avg_quickness_uptime || 0), 0) / rows.length;
+    const avgStability = rows.reduce((sum, p) => sum + (p.avg_stability_uptime || 0), 0) / rows.length;
+    const totalCleanses = rows.reduce((sum, p) => sum + (p.total_cleanses || 0), 0);
+    
     const topSupport = [...rows].sort((a, b) => (b.avg_cleanses_per_minute || 0) - (a.avg_cleanses_per_minute || 0)).slice(0, 15);
     
     let html = `
+        <!-- Tarjetas de Métricas de Support -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+            <div class="stat-card">
+                <div class="stat-icon">💚</div>
+                <div class="stat-label">SQUAD MIGHT AVG</div>
+                <div class="stat-value">${avgMight.toFixed(1)}%</div>
+                <div class="stat-sublabel">Average might uptime</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⚡</div>
+                <div class="stat-label">SQUAD QUICKNESS AVG</div>
+                <div class="stat-value">${avgQuickness.toFixed(1)}%</div>
+                <div class="stat-sublabel">Average quickness uptime</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🛡️</div>
+                <div class="stat-label">SQUAD STABILITY AVG</div>
+                <div class="stat-value">${avgStability.toFixed(1)}%</div>
+                <div class="stat-sublabel">Average stability uptime</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🌸</div>
+                <div class="stat-label">TOTAL CLEANSES</div>
+                <div class="stat-value">${Math.round(totalCleanses)}</div>
+                <div class="stat-sublabel">Conditions removed</div>
+            </div>
+        </div>
+        
+        <!-- Tabla de Top Support Players -->
         <div class="glass-card">
-            <h3 class="card-title">💚 Top 15 Support - Cleanses & Boons</h3>
+            <h3 class="card-title">💚 Top Support Players</h3>
             <table style="width: 100%; border-collapse: collapse;">
                 <thead>
                     <tr style="background: rgba(212, 175, 55, 0.2); border-bottom: 2px solid rgba(212, 175, 55, 0.4);">
-                        <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Jugador</th>
-                        <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Cleanses/min</th>
-                        <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Stability %</th>
-                        <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Quickness %</th>
+                        <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Player</th>
+                        <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Role</th>
                         <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Might %</th>
+                        <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Quick %</th>
+                        <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Stab %</th>
+                        <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Cleanses/min</th>
                     </tr>
                 </thead>
                 <tbody>
     `;
     
     topSupport.forEach(player => {
+        const role = determinarRol(player);
         html += `
-            <tr style="border-bottom: 1px solid rgba(212, 175, 55, 0.1);">
+            <tr style="border-bottom: 1px solid rgba(212, 175, 55, 0.1); cursor: pointer;" onclick="mostrarDetallesJugador('${player.player_name}', '${player.profession}')">
                 <td style="padding: 0.75rem;">${formatearNombreJugador(player.player_name, player.profession)}</td>
+                <td style="padding: 0.75rem;"><span class="role-badge ${role.toLowerCase().replace(' ', '-')}">${role}</span></td>
+                <td style="padding: 0.75rem; color: #e2e8f0;">${(player.avg_might_uptime || 0).toFixed(1)}%</td>
+                <td style="padding: 0.75rem; color: #e2e8f0;">${(player.avg_quickness_uptime || 0).toFixed(1)}%</td>
+                <td style="padding: 0.75rem; color: #e2e8f0;">${(player.avg_stability_uptime || 0).toFixed(1)}%</td>
                 <td style="padding: 0.75rem; color: #8BC34A; font-weight: bold;">${(player.avg_cleanses_per_minute || 0).toFixed(1)}</td>
-                <td style="padding: 0.75rem;">${crearProgressBar(player.avg_stability_uptime || 0)}</td>
-                <td style="padding: 0.75rem;">${crearProgressBar(player.avg_quickness_uptime || 0)}</td>
-                <td style="padding: 0.75rem;">${crearProgressBar(player.avg_might_uptime || 0)}</td>
             </tr>
         `;
     });
@@ -406,18 +485,54 @@ function renderDefenseStats(rows, containerId) {
         return;
     }
     
+    // Calcular métricas agregadas de defensa
+    const totalDeaths = rows.reduce((sum, p) => sum + (p.avg_deaths_per_encounter || 0), 0);
+    const avgSurvivalRatio = rows.reduce((sum, p) => sum + (p.avg_survival_ratio || 0), 0) / rows.length;
+    const totalDamageTaken = rows.reduce((sum, p) => sum + (p.avg_damage_taken || 0), 0);
+    const totalDamagePrevented = rows.reduce((sum, p) => sum + (p.avg_damage_prevented || 0), 0);
+    
     const bestSurvival = [...rows].sort((a, b) => (b.avg_survival_ratio || 0) - (a.avg_survival_ratio || 0)).slice(0, 15);
     
     let html = `
+        <!-- Tarjetas de Métricas de Defense -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+            <div class="stat-card">
+                <div class="stat-icon">❤️</div>
+                <div class="stat-label">TOTAL DEATHS</div>
+                <div class="stat-value">${Math.round(totalDeaths)}</div>
+                <div class="stat-sublabel">Squad casualties</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🛡️</div>
+                <div class="stat-label">AVG SURVIVAL RATE</div>
+                <div class="stat-value">${avgSurvivalRatio.toFixed(2)}</div>
+                <div class="stat-sublabel">Per player average</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⚔️</div>
+                <div class="stat-label">DAMAGE TAKEN</div>
+                <div class="stat-value">${Math.round(totalDamageTaken).toLocaleString()}</div>
+                <div class="stat-sublabel">Total incoming damage</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✨</div>
+                <div class="stat-label">DAMAGE PREVENTED</div>
+                <div class="stat-value">${Math.round(totalDamagePrevented).toLocaleString()}</div>
+                <div class="stat-sublabel">Mitigated damage</div>
+            </div>
+        </div>
+        
+        <!-- Tabla de Survivability Leaders -->
         <div class="glass-card">
-            <h3 class="card-title">🛡️ Top 15 Supervivencia</h3>
+            <h3 class="card-title">🛡️ Survivability Leaders</h3>
             <table style="width: 100%; border-collapse: collapse;">
                 <thead>
                     <tr style="background: rgba(212, 175, 55, 0.2); border-bottom: 2px solid rgba(212, 175, 55, 0.4);">
-                        <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Jugador</th>
+                        <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Player</th>
+                        <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Survival Rate</th>
                         <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Deaths</th>
-                        <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Survival Ratio</th>
-                        <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Damage Taken</th>
+                        <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Dmg Taken</th>
+                        <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Dmg Prevented</th>
                         <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Tier</th>
                     </tr>
                 </thead>
@@ -426,12 +541,13 @@ function renderDefenseStats(rows, containerId) {
     
     bestSurvival.forEach(player => {
         html += `
-            <tr style="border-bottom: 1px solid rgba(212, 175, 55, 0.1);">
+            <tr style="border-bottom: 1px solid rgba(212, 175, 55, 0.1); cursor: pointer;" onclick="mostrarDetallesJugador('${player.player_name}', '${player.profession}')">
                 <td style="padding: 0.75rem;">${formatearNombreJugador(player.player_name, player.profession)}</td>
-                <td style="padding: 0.75rem; color: #e2e8f0;">${(player.avg_deaths_per_encounter || 0).toFixed(1)}</td>
                 <td style="padding: 0.75rem; color: #8BC34A; font-weight: bold;">${(player.avg_survival_ratio || 0).toFixed(2)}</td>
-                <td style="padding: 0.75rem; color: #e2e8f0;">${(player.avg_damage_taken || 0).toLocaleString()}</td>
-                <td style="padding: 0.75rem; color: #e2e8f0;">${player.survivability_tier || 'N/A'}</td>
+                <td style="padding: 0.75rem; color: #e2e8f0;">${Math.round(player.avg_deaths_per_encounter || 0)}</td>
+                <td style="padding: 0.75rem; color: #e2e8f0;">${Math.round(player.avg_damage_taken || 0).toLocaleString()}</td>
+                <td style="padding: 0.75rem; color: #e2e8f0;">${Math.round(player.avg_damage_prevented || 0).toLocaleString()}</td>
+                <td style="padding: 0.75rem;"><span class="tier-badge ${(player.survivability_tier || 'N/A').toLowerCase()}">${player.survivability_tier || 'N/A'}</span></td>
             </tr>
         `;
     });
@@ -449,35 +565,77 @@ function renderPlayerPerformanceDetailed(rows, containerId) {
         return;
     }
     
+    // Calcular conteo de tiers de performance
+    const expertCount = rows.filter(p => p.performance_tier === 'Expert').length;
+    const advancedCount = rows.filter(p => p.performance_tier === 'Advanced').length;
+    const intermediateCount = rows.filter(p => p.performance_tier === 'Intermediate').length;
+    const beginnerCount = rows.filter(p => p.performance_tier === 'Beginner').length;
+    
+    // Ordenar por score de performance (o DPS si no hay score)
+    const sortedPlayers = [...rows].sort((a, b) => {
+        const scoreA = a.performance_score || a.avg_dps || 0;
+        const scoreB = b.performance_score || b.avg_dps || 0;
+        return scoreB - scoreA;
+    });
+    
     let html = `
+        <!-- Tarjetas de Métricas de Performance -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+            <div class="stat-card">
+                <div class="stat-icon">🏆</div>
+                <div class="stat-label">EXPERT PLAYERS</div>
+                <div class="stat-value">${expertCount}</div>
+                <div class="stat-sublabel">Top tier performers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-label">ADVANCED PLAYERS</div>
+                <div class="stat-value">${advancedCount}</div>
+                <div class="stat-sublabel">High skill bracket</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🌿</div>
+                <div class="stat-label">INTERMEDIATE</div>
+                <div class="stat-value">${intermediateCount}</div>
+                <div class="stat-sublabel">Mid skill bracket</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🌱</div>
+                <div class="stat-label">BEGINNERS</div>
+                <div class="stat-value">${beginnerCount}</div>
+                <div class="stat-sublabel">Learning players</div>
+            </div>
+        </div>
+        
+        <!-- Tabla de Performance Rankings -->
         <div class="glass-card">
-            <h3 class="card-title">🏆 Rendimiento Detallado por Jugador [${rows.length} jugadores]</h3>
+            <h3 class="card-title">📋 Performance Rankings</h3>
             <div style="max-height: 700px; overflow-y: auto;">
                 <table style="width: 100%; border-collapse: collapse;">
                     <thead style="position: sticky; top: 0; background: rgba(15, 23, 42, 0.95); z-index: 1;">
                         <tr style="background: rgba(212, 175, 55, 0.2); border-bottom: 2px solid rgba(212, 175, 55, 0.4);">
-                            <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Jugador</th>
-                            <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Squad</th>
-                            <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Role</th>
-                            <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">DPS</th>
-                            <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Deaths</th>
-                            <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Cleanses/min</th>
-                            <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Tier</th>
+                            <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Rank</th>
+                            <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Player</th>
+                            <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Score</th>
+                            <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Performance Tier</th>
+                            <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Survival Tier</th>
+                            <th style="padding: 0.75rem; text-align: left; color: #D4AF37;">Efficiency</th>
                         </tr>
                     </thead>
                     <tbody>
     `;
     
-    rows.forEach(player => {
+    sortedPlayers.forEach((player, index) => {
+        const score = player.performance_score || (player.avg_dps / 10) || 0;
+        const efficiency = player.damage_efficiency || ((player.avg_dps || 0) / Math.max(player.avg_deaths_per_encounter || 1, 0.1) / 1000) || 0;
         html += `
-            <tr style="border-bottom: 1px solid rgba(212, 175, 55, 0.1);">
+            <tr style="border-bottom: 1px solid rgba(212, 175, 55, 0.1); cursor: pointer;" onclick="mostrarDetallesJugador('${player.player_name}', '${player.profession}')">
+                <td style="padding: 0.75rem; color: #D4AF37; font-weight: bold;">${index + 1}</td>
                 <td style="padding: 0.75rem;">${formatearNombreJugador(player.player_name, player.profession)}</td>
-                <td style="padding: 0.75rem; color: #e2e8f0;">${player.squad_group || 'N/A'}</td>
-                <td style="padding: 0.75rem; color: #e2e8f0;">${player.primary_role || 'N/A'}</td>
-                <td style="padding: 0.75rem;">${crearPill(player.avg_dps || 0, 'dps')}</td>
-                <td style="padding: 0.75rem; color: #e2e8f0;">${(player.avg_deaths_per_encounter || 0).toFixed(1)}</td>
-                <td style="padding: 0.75rem; color: #e2e8f0;">${(player.avg_cleanses_per_minute || 0).toFixed(1)}</td>
-                <td style="padding: 0.75rem; color: #e2e8f0;">${player.performance_tier || 'N/A'}</td>
+                <td style="padding: 0.75rem;"><span class="stat-pill high" style="background: linear-gradient(135deg, rgba(76, 175, 80, 0.4), rgba(139, 195, 74, 0.3)); color: #8BC34A; border-color: rgba(76, 175, 80, 0.5);">${score.toFixed(1)}</span></td>
+                <td style="padding: 0.75rem;"><span class="tier-badge ${(player.performance_tier || 'N/A').toLowerCase()}">${player.performance_tier || 'N/A'}</span></td>
+                <td style="padding: 0.75rem;"><span class="tier-badge ${(player.survivability_tier || 'N/A').toLowerCase()}">${player.survivability_tier || 'N/A'}</span></td>
+                <td style="padding: 0.75rem; color: #e2e8f0;">${efficiency.toFixed(2)}</td>
             </tr>
         `;
     });
@@ -576,3 +734,233 @@ document.getElementById("uploadForm").addEventListener("submit", async function(
         submitBtn.disabled = false;
     }
 });
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+function determinarRol(player) {
+    const dps = player.avg_dps || 0;
+    const cleanses = player.avg_cleanses_per_minute || 0;
+    const might = player.avg_might_uptime || 0;
+    const quickness = player.avg_quickness_uptime || 0;
+    const stability = player.avg_stability_uptime || 0;
+    
+    // Support roles: high cleanses or boons
+    if (cleanses > 5 || might > 60 || quickness > 60 || stability > 40) {
+        return 'Support';
+    }
+    
+    // High DPS roles
+    if (dps > 800) {
+        return 'DPS';
+    }
+    
+    // Hybrid
+    if (dps > 400 && (cleanses > 2 || might > 30)) {
+        return 'Hybrid';
+    }
+    
+    return 'DPS';
+}
+
+function mostrarDetallesJugador(playerName, profession) {
+    // Buscar datos del jugador en todos los datasets
+    const playerDaily = globalData.daily.find(p => p.player_name === playerName);
+    const playerSummary = globalData.summary.find(p => p.player_name === playerName);
+    
+    if (!playerDaily && !playerSummary) {
+        alert('No se encontraron datos para ' + playerName);
+        return;
+    }
+    
+    const data = playerDaily || playerSummary;
+    
+    // Crear modal con detalles del jugador
+    const modal = document.createElement('div');
+    modal.id = 'playerModal';
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        backdrop-filter: blur(5px);
+    `;
+    
+    const role = determinarRol(data);
+    const performanceTier = data.performance_tier || 'N/A';
+    const survivalTier = data.survivability_tier || 'N/A';
+    
+    modal.innerHTML = `
+        <div style="
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        ">
+            <!-- Header -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 2px solid rgba(212, 175, 55, 0.3); padding-bottom: 1rem;">
+                <div>
+                    <h2 style="color: #FFA500; margin: 0; font-size: 1.8rem;">${playerName}</h2>
+                    <p style="color: #94a3b8; margin: 0.5rem 0 0 0;">${profession} • ${role}</p>
+                </div>
+                <button onclick="cerrarModal()" style="
+                    background: rgba(239, 68, 68, 0.2);
+                    border: 1px solid rgba(239, 68, 68, 0.5);
+                    color: #EF4444;
+                    padding: 0.5rem 1rem;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-weight: bold;
+                    transition: all 0.2s ease;
+                " onmouseover="this.style.background='rgba(239, 68, 68, 0.4)'" onmouseout="this.style.background='rgba(239, 68, 68, 0.2)'">✕ Cerrar</button>
+            </div>
+            
+            <!-- Performance Tiers -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+                <div style="background: rgba(212, 175, 55, 0.1); padding: 1rem; border-radius: 10px; border: 1px solid rgba(212, 175, 55, 0.2);">
+                    <div style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 0.5rem;">Performance Tier</div>
+                    <div style="font-size: 1.5rem; color: #FFA500; font-weight: bold;">${performanceTier}</div>
+                </div>
+                <div style="background: rgba(212, 175, 55, 0.1); padding: 1rem; border-radius: 10px; border: 1px solid rgba(212, 175, 55, 0.2);">
+                    <div style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 0.5rem;">Survival Tier</div>
+                    <div style="font-size: 1.5rem; color: #8BC34A; font-weight: bold;">${survivalTier}</div>
+                </div>
+            </div>
+            
+            <!-- Combat Stats -->
+            <div style="margin-bottom: 2rem;">
+                <h3 style="color: #D4AF37; margin-bottom: 1rem; font-size: 1.2rem;">⚔️ Combat Statistics</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                    <div class="stat-row">
+                        <span style="color: #94a3b8;">Average DPS:</span>
+                        <span style="color: #FFA500; font-weight: bold;">${Math.round(data.avg_dps || 0)}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span style="color: #94a3b8;">Total Damage:</span>
+                        <span style="color: #e2e8f0;">${Math.round(data.total_damage_dealt || 0).toLocaleString()}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span style="color: #94a3b8;">Power Damage %:</span>
+                        <span style="color: #e2e8f0;">${Math.round(data.avg_power_damage_pct || 0)}%</span>
+                    </div>
+                    <div class="stat-row">
+                        <span style="color: #94a3b8;">Condi Damage %:</span>
+                        <span style="color: #e2e8f0;">${Math.round(data.avg_condi_damage_pct || 0)}%</span>
+                    </div>
+                    <div class="stat-row">
+                        <span style="color: #94a3b8;">Cleave %:</span>
+                        <span style="color: #e2e8f0;">${(data.avg_cleave_pct || 100).toFixed(1)}%</span>
+                    </div>
+                    <div class="stat-row">
+                        <span style="color: #94a3b8;">Encounters:</span>
+                        <span style="color: #e2e8f0;">${data.total_encounters || data.encounter_count || 1}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Support Stats -->
+            <div style="margin-bottom: 2rem;">
+                <h3 style="color: #D4AF37; margin-bottom: 1rem; font-size: 1.2rem;">💚 Support Statistics</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                    <div class="stat-row">
+                        <span style="color: #94a3b8;">Might Uptime:</span>
+                        <span style="color: #8BC34A; font-weight: bold;">${(data.avg_might_uptime || 0).toFixed(1)}%</span>
+                    </div>
+                    <div class="stat-row">
+                        <span style="color: #94a3b8;">Quickness Uptime:</span>
+                        <span style="color: #8BC34A; font-weight: bold;">${(data.avg_quickness_uptime || 0).toFixed(1)}%</span>
+                    </div>
+                    <div class="stat-row">
+                        <span style="color: #94a3b8;">Stability Uptime:</span>
+                        <span style="color: #8BC34A; font-weight: bold;">${(data.avg_stability_uptime || 0).toFixed(1)}%</span>
+                    </div>
+                    <div class="stat-row">
+                        <span style="color: #94a3b8;">Cleanses/min:</span>
+                        <span style="color: #8BC34A; font-weight: bold;">${(data.avg_cleanses_per_minute || 0).toFixed(1)}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span style="color: #94a3b8;">Total Cleanses:</span>
+                        <span style="color: #e2e8f0;">${Math.round(data.total_cleanses || 0)}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span style="color: #94a3b8;">Strips:</span>
+                        <span style="color: #e2e8f0;">${Math.round(data.total_strips || 0)}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Defense Stats -->
+            <div>
+                <h3 style="color: #D4AF37; margin-bottom: 1rem; font-size: 1.2rem;">🛡️ Defense Statistics</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                    <div class="stat-row">
+                        <span style="color: #94a3b8;">Survival Ratio:</span>
+                        <span style="color: #8BC34A; font-weight: bold;">${(data.avg_survival_ratio || 0).toFixed(2)}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span style="color: #94a3b8;">Deaths/Encounter:</span>
+                        <span style="color: #EF4444;">${(data.avg_deaths_per_encounter || 0).toFixed(1)}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span style="color: #94a3b8;">Damage Taken:</span>
+                        <span style="color: #e2e8f0;">${Math.round(data.avg_damage_taken || 0).toLocaleString()}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span style="color: #94a3b8;">Damage Prevented:</span>
+                        <span style="color: #8BC34A;">${Math.round(data.avg_damage_prevented || 0).toLocaleString()}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span style="color: #94a3b8;">Barrier Generated:</span>
+                        <span style="color: #e2e8f0;">${Math.round(data.total_barrier_generated || 0).toLocaleString()}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span style="color: #94a3b8;">Squad Group:</span>
+                        <span style="color: #FFA500;">${data.squad_group || 'N/A'}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Agregar estilos para las filas de estadísticas
+    const style = document.createElement('style');
+    style.textContent = `
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Click fuera del modal para cerrar
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            cerrarModal();
+        }
+    });
+}
+
+function cerrarModal() {
+    const modal = document.getElementById('playerModal');
+    if (modal) {
+        modal.remove();
+    }
+}

@@ -204,78 +204,172 @@ tr:hover {
     margin-bottom: 0.5rem;
 }
 
-/* Tarjetas de datos */
-.glass-card {
-    background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(217, 119, 6, 0.2);
-    border-radius: 10px;
+/* ============================================================================
+   NUEVAS CLASES PARA DASHBOARD MEJORADO
+   ============================================================================ */
+
+/* Tarjetas de Estadísticas */
+.stat-card {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(30, 41, 59, 0.7));
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 15px;
     padding: 1.5rem;
-    margin-bottom: 1.5rem;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
 }
 
-.card-title {
-    color: #fbbf24;
-    font-size: 1.1rem;
-    font-weight: bold;
+.stat-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(212, 175, 55, 0.6);
+    box-shadow: 0 12px 32px rgba(212, 175, 55, 0.3);
+}
+
+.stat-icon {
+    font-size: 2.5rem;
     margin-bottom: 0.5rem;
 }
-/* ==================================================================
-   ENHANCED VISUAL ELEMENTS - Pills, Progress Bars, Highlights
-   ================================================================== */
 
-/* Stat pills - Visual indicators for metrics (DPS, tiers) */
-.stat-pill {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    border: 1px solid;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-    transition: all 0.2s ease;
+.stat-label {
+    color: #D4AF37;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
 }
 
-.stat-pill.high {
-    background: linear-gradient(135deg, rgba(76, 175, 80, 0.4), rgba(139, 195, 74, 0.3));
+.stat-value {
+    color: #ffffff;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+    text-shadow: 0 2px 8px rgba(255, 255, 255, 0.3);
+}
+
+.stat-sublabel {
+    color: #94a3b8;
+    font-size: 0.8rem;
+}
+
+/* Badges de Rol */
+.role-badge {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid;
+}
+
+.role-badge.might-support {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.3), rgba(139, 195, 74, 0.2));
     color: #8BC34A;
     border-color: rgba(76, 175, 80, 0.5);
 }
 
-.stat-pill.medium {
-    background: linear-gradient(135deg, rgba(255, 193, 7, 0.4), rgba(255, 152, 0, 0.3));
+.role-badge.quick-support {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.3), rgba(255, 152, 0, 0.2));
     color: #FFC107;
     border-color: rgba(255, 193, 7, 0.5);
 }
 
-.stat-pill.low {
-    background: linear-gradient(135deg, rgba(244, 67, 54, 0.4), rgba(229, 57, 53, 0.3));
+.role-badge.stab-support {
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.3), rgba(30, 136, 229, 0.2));
+    color: #42A5F5;
+    border-color: rgba(33, 150, 243, 0.5);
+}
+
+.role-badge.power-dps {
+    background: linear-gradient(135deg, rgba(244, 67, 54, 0.3), rgba(229, 57, 53, 0.2));
     color: #EF5350;
     border-color: rgba(244, 67, 54, 0.5);
 }
 
-/* Hover effects for table rows */
-tbody tr {
-    transition: all 0.2s ease;
-    cursor: pointer;
+.role-badge.condi-dps {
+    background: linear-gradient(135deg, rgba(156, 39, 176, 0.3), rgba(123, 31, 162, 0.2));
+    color: #BA68C8;
+    border-color: rgba(156, 39, 176, 0.5);
 }
 
-tbody tr:hover {
-    background: linear-gradient(90deg, rgba(212, 175, 55, 0.15), rgba(255, 140, 0, 0.1));
-    transform: translateX(3px);
+/* Badges de Tier */
+.tier-badge {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    border: 1px solid;
 }
 
-tbody tr:hover td {
-    color: #FFA500;
+.tier-badge.expert {
+    background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), rgba(255, 215, 0, 0.2));
+    color: #D4AF37;
+    border-color: rgba(212, 175, 55, 0.5);
 }
 
-/* Strong player names in tables */
-td strong {
-    color: #FFA500;
-    font-weight: bold;
+.tier-badge.advanced {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.3), rgba(139, 195, 74, 0.2));
+    color: #8BC34A;
+    border-color: rgba(76, 175, 80, 0.5);
 }
 
-td small {
-    color: #94a3b8;
-    font-size: 0.8rem;
+.tier-badge.intermediate {
+    background: linear-gradient(135deg, rgba(33, 150, 243, 0.3), rgba(30, 136, 229, 0.2));
+    color: #42A5F5;
+    border-color: rgba(33, 150, 243, 0.5);
+}
+
+.tier-badge.beginner, .tier-badge.n\/a {
+    background: linear-gradient(135deg, rgba(158, 158, 158, 0.3), rgba(117, 117, 117, 0.2));
+    color: #9E9E9E;
+    border-color: rgba(158, 158, 158, 0.5);
+}
+
+/* Cajas de estadísticas en modal */
+.stat-box {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+}
+
+/* Modal styles */
+.modal-content {
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Scrollbar styling for modal */
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.3);
+    border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: rgba(212, 175, 55, 0.5);
+    border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(212, 175, 55, 0.7);
 }
