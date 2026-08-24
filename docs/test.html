@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Test de Carga JSON</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #0f0; }
+        .success { color: #0f0; }
+        .error { color: #f00; }
+        pre { background: #000; padding: 10px; border: 1px solid #0f0; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test de Carga de Archivos JSON</h1>
+    <div id="results"></div>
+    
+    <script>
+        const files = [
+            'wvw_encounter_summary.json',
+            'wvw_player_stats_daily.json',
+            'wvw_player_stats_summary.json',
+            'wvw_profession_performance.json',
+            'wvw_squad_composition.json'
+        ];
+        
+        const resultsDiv = document.getElementById('results');
+        
+        async function testFile(filename) {
+            try {
+                const response = await fetch(`data/${filename}?v=${Date.now()}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                const data = await response.json();
+                const count = Array.isArray(data) ? data.length : 1;
+                resultsDiv.innerHTML += `<div class="success">✅ ${filename}: ${count} registros</div>`;
+                resultsDiv.innerHTML += `<pre>${JSON.stringify(data[0] || data, null, 2).substring(0, 500)}...</pre>`;
+            } catch (e) {
+                resultsDiv.innerHTML += `<div class="error">❌ ${filename}: ${e.message}</div>`;
+                console.error(filename, e);
+            }
+        }
+        
+        (async () => {
+            for (const file of files) {
+                await testFile(file);
+            }
+        })();
+    </script>
+</body>
+</html>
