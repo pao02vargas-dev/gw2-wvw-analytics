@@ -59,12 +59,17 @@ async function cargarTodosLosDatos() {
 
 async function obtenerDatosJson(nombreArchivo) {
     try {
+        console.log(`📚 Intentando cargar: data/${nombreArchivo}`);
         const response = await fetch(`data/${nombreArchivo}`);
-        if (!response.ok) return [];
+        if (!response.ok) {
+            console.error(`❌ Error ${response.status}: data/${nombreArchivo}`);
+            return [];
+        }
         const data = await response.json();
+        console.log(`✅ Cargado ${nombreArchivo}: ${Array.isArray(data) ? data.length : 1} registros`);
         return Array.isArray(data) ? data : [data];
     } catch (e) {
-        console.warn(`No se pudo cargar data/${nombreArchivo}:`, e);
+        console.error(`❌ No se pudo cargar data/${nombreArchivo}:`, e);
         return [];
     }
 }
@@ -78,7 +83,7 @@ function poblarSelectorEncuentros() {
     globalData.encounters.forEach((enc, index) => {
         const opt = document.createElement("option");
         opt.value = enc.encounter_id || index;
-        opt.textContent = `Encuentro #${enc.encounter_id || index} - ${enc.date || 'Fecha N/A'}`;
+        opt.textContent = `Encuentro #${enc.encounter_id || index} - ${enc.encounter_date || 'Fecha N/A'}`;
         select.appendChild(opt);
     });
 }
