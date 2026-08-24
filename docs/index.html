@@ -19,13 +19,13 @@
     <!-- MENÚ DE PESTAÑAS NAVEGABLES -->
     <nav class="nav-tabs-container">
         <button class="tab-btn active" onclick="switchTab(event, 'tab-upload')">📤 Cargar Log</button>
-        <button class="tab-btn" onclick="switchTab(event, 'tab-history')">📊 Estadísticas Gold (Histórico)</button>
+        <button class="tab-btn" onclick="switchTab(event, 'tab-history')">📊 Estadísticas Históricas</button>
     </nav>
 
     <!-- BODY / CONTENIDO PRINCIPAL -->
     <main class="dashboard-main">
 
-        <!-- PESTAÑA 1: Carga de archivo (Batch) - ¡Conservada y lista! -->
+        <!-- PESTAÑA 1: Carga de archivo (Batch) -->
         <section id="tab-upload" class="tab-content active">
             <div class="glass-panel">
                 <h2>Análisis de Encuentro</h2>
@@ -41,18 +41,60 @@
         </section>
 
         <!-- PESTAÑA 2: Estadísticas Históricas (Capa Gold) -->
-     <!-- PESTAÑA 2: Estadísticas Históricas (Capa Gold) -->
-<section id="tab-history" class="tab-content">
-    <div class="glass-panel wide-panel">
-        <h2>📈 Capa Gold - Historial de Combates</h2>
-        <p>Datos procesados previamente y sincronizados desde Databricks.</p> 
-        <div id="container-encounter-overview"></div>
-        <div id="container-player-performance"></div>
-        <div id="container-player-summary"></div>
-        <div id="container-profession-stats"></div>
-        <div id="container-squad-analysis"></div>
-    </div>
-</section>
+        <section id="tab-history" class="tab-content">
+            <div class="glass-panel wide-panel">
+                <h2>📈 Historial de Encuentros</h2>
+                <p>Datos procesados previamente y sincronizados desde Databricks.</p> 
+
+                <!-- Filtros Interactivos por Encuentro y Jugador -->
+                <div style="margin: 1.5rem 0; display: flex; gap: 20px; flex-wrap: wrap; align-items: center;">
+                    <div style="flex: 1; min-width: 250px;">
+                        <label style="display: block; font-size: 0.85rem; color: #cbd5e1; margin-bottom: 6px;">🎯 Select Encounter</label>
+                        <select id="encounterSelect" style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(15, 23, 42, 0.8); color: #fff; border: 1px solid rgba(255,255,255,0.1);">
+                            <option value="all">Todos los encuentros</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1; min-width: 250px;">
+                        <label style="display: block; font-size: 0.85rem; color: #cbd5e1; margin-bottom: 6px;">🔍 Search Player</label>
+                        <input type="text" id="playerSearch" placeholder="Search by player name or profession..." style="width: 100%; padding: 10px; border-radius: 8px; background: rgba(15, 23, 42, 0.8); color: #fff; border: 1px solid rgba(255,255,255,0.1); box-sizing: border-box;">
+                    </div>
+                </div>
+
+                <!-- Sub-pestañas Temáticas -->
+                <div style="padding: 5px 0; margin-bottom: 1.5rem; display: flex; gap: 10px; overflow-x: auto;">
+                    <button class="sub-tab-btn active" onclick="switchSubTab(event, 'subtab-overview')">📊 Overview</button>
+                    <button class="sub-tab-btn" onclick="switchSubTab(event, 'subtab-combat')">⚔️ Combat</button>
+                    <button class="sub-tab-btn" onclick="switchSubTab(event, 'subtab-support')">💚 Support</button>
+                    <button class="sub-tab-btn" onclick="switchSubTab(event, 'subtab-defense')">🛡️ Defense</button>
+                    <button class="sub-tab-btn" onclick="switchSubTab(event, 'subtab-performance')">🏆 Performance</button>
+                </div>
+
+                <!-- Contenido de las Sub-pestañas -->
+                <div id="subtab-overview" class="subtab-content active">
+                    <div id="container-encounter-overview"></div>
+                    <div id="container-squad-analysis"></div>
+                </div>
+
+                <div id="subtab-combat" class="subtab-content" style="display: none;">
+                    <div id="container-combat-stats"></div>
+                </div>
+
+                <div id="subtab-support" class="subtab-content" style="display: none;">
+                    <div id="container-support-stats"></div>
+                </div>
+
+                <div id="subtab-defense" class="subtab-content" style="display: none;">
+                    <div id="container-defense-stats"></div>
+                </div>
+
+                <div id="subtab-performance" class="subtab-content" style="display: none;">
+                    <div id="container-player-performance"></div>
+                    <div id="container-player-summary"></div>
+                    <div id="container-profession-stats"></div>
+                </div>
+
+            </div>
+        </section>
 
     </main>
 
