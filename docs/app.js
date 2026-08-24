@@ -493,10 +493,8 @@ function renderSupportStats(rows, containerId) {
     
     topSupport.forEach(player => {
         const role = determinarRol(player);
-        const safeName = (player.player_name || '').replace(/'/g, "\\'");
-        const safeProfession = (player.profession || '').replace(/'/g, "\\'");
         html += `
-            <tr style="border-bottom: 1px solid rgba(212, 175, 55, 0.1); cursor: pointer;" onclick="mostrarDetallesJugador('${safeName}', '${safeProfession}')">
+            <tr style="border-bottom: 1px solid rgba(212, 175, 55, 0.1); cursor: pointer;" onclick="mostrarDetallesJugador('${player.player_name}', '${player.profession}')">
                 <td style="padding: 0.75rem;">${formatearNombreJugador(player.player_name, player.profession)}</td>
                 <td style="padding: 0.75rem;"><span class="role-badge ${role.toLowerCase().replace(' ', '-')}">${role}</span></td>
                 <td style="padding: 0.75rem; color: #e2e8f0;">${(player.avg_might_uptime || 0).toFixed(1)}%</td>
@@ -575,8 +573,10 @@ function renderDefenseStats(rows, containerId) {
     `;
     
     bestSurvival.forEach(player => {
+        const safeName = (player.player_name || '').replace(/'/g, "\\'");
+        const safeProfession = (player.profession || '').replace(/'/g, "\\'");
         html += `
-            <tr style="border-bottom: 1px solid rgba(212, 175, 55, 0.1); cursor: pointer;" onclick="mostrarDetallesJugador('${player.player_name}', '${player.profession}')">
+            <tr style="border-bottom: 1px solid rgba(212, 175, 55, 0.1); cursor: pointer;" onclick="mostrarDetallesJugador('${safeName}', '${safeProfession}')">
                 <td style="padding: 0.75rem;">${formatearNombreJugador(player.player_name, player.profession)}</td>
                 <td style="padding: 0.75rem; color: #8BC34A; font-weight: bold;">${(player.avg_survival_ratio || 0).toFixed(2)}</td>
                 <td style="padding: 0.75rem; color: #e2e8f0;">${Math.round(player.avg_deaths_per_encounter || 0)}</td>
@@ -663,8 +663,10 @@ function renderPlayerPerformanceDetailed(rows, containerId) {
     sortedPlayers.forEach((player, index) => {
         const score = player.performance_score || (player.avg_dps / 10) || 0;
         const efficiency = player.damage_efficiency || ((player.avg_dps || 0) / Math.max(player.avg_deaths_per_encounter || 1, 0.1) / 1000) || 0;
+        const safeName = (player.player_name || '').replace(/'/g, "\\'");
+        const safeProfession = (player.profession || '').replace(/'/g, "\\'");
         html += `
-            <tr style="border-bottom: 1px solid rgba(212, 175, 55, 0.1); cursor: pointer;" onclick="mostrarDetallesJugador('${player.player_name}', '${player.profession}')">
+            <tr style="border-bottom: 1px solid rgba(212, 175, 55, 0.1); cursor: pointer;" onclick="mostrarDetallesJugador('${safeName}', '${safeProfession}')">
                 <td style="padding: 0.75rem; color: #D4AF37; font-weight: bold;">${index + 1}</td>
                 <td style="padding: 0.75rem;">${formatearNombreJugador(player.player_name, player.profession)}</td>
                 <td style="padding: 0.75rem;"><span class="stat-pill high" style="background: linear-gradient(135deg, rgba(76, 175, 80, 0.4), rgba(139, 195, 74, 0.3)); color: #8BC34A; border-color: rgba(76, 175, 80, 0.5);">${score.toFixed(1)}</span></td>
