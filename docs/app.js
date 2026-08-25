@@ -444,7 +444,7 @@ function renderSupportStats(rows, containerId) {
     const avgMight = rows.reduce((sum, p) => sum + (p.avg_might_uptime || 0), 0) / rows.length;
     const avgQuickness = rows.reduce((sum, p) => sum + (p.avg_quickness_uptime || 0), 0) / rows.length;
     const avgStability = rows.reduce((sum, p) => sum + (p.avg_stability_uptime || 0), 0) / rows.length;
-    const totalCleanses = rows.reduce((sum, p) => sum + (p.total_cleanses || 0), 0);
+    const totalCleanses = rows.reduce((sum, p) => sum + (p.total_conditions_cleansed || 0), 0);
     
     const topSupport = [...rows].sort((a, b) => (b.avg_cleanses_per_minute || 0) - (a.avg_cleanses_per_minute || 0)).slice(0, 15);
     
@@ -932,7 +932,7 @@ function mostrarDetallesJugador(playerName, profession) {
                     </div>
                     <div class="stat-row">
                         <span style="color: #94a3b8;">Total Cleanses:</span>
-                        <span style="color: #e2e8f0;">${Math.round(data.total_cleanses || 0)}</span>
+                        <span style="color: #e2e8f0;">${Math.round(data.total_conditions_cleansed || 0)}</span>
                     </div>
                     <div class="stat-row">
                         <span style="color: #94a3b8;">Strips:</span>
