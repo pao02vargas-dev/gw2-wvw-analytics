@@ -15,5 +15,39 @@
     "avg_cleanses_per_minute": 5.9,
     "encounter_difficulty": "Hard",
     "group_coordination": "Needs Work"
+  },
+  {
+    "encounter_id": 459776,
+    "encounter_date": "2026-07-12",
+    "encounter_time": "2026-07-13 02:32:58",
+    "encounter_duration_minutes": 5.6625499999999995,
+    "total_players": 53,
+    "unique_professions": 17,
+    "avg_dps": 339.0,
+    "total_group_damage": 6103787,
+    "avg_deaths": 0.23,
+    "total_deaths": 12,
+    "avg_stability_uptime": 1.3,
+    "avg_quickness_uptime": 8.7,
+    "avg_cleanses_per_minute": 3.4,
+    "encounter_difficulty": "Hard",
+    "group_coordination": "Needs Work"
+  },
+  {
+    "encounter_id": 459264,
+    "encounter_date": "2026-08-21",
+    "encounter_time": "2026-08-22 02:20:32",
+    "encounter_duration_minutes": 1.2205000000000001,
+    "total_players": 24,
+    "unique_professions": 12,
+    "avg_dps": 767.0,
+    "total_group_damage": 1348092,
+    "avg_deaths": 1.0,
+    "total_deaths": 24,
+    "avg_stability_uptime": 2.1,
+    "avg_quickness_uptime": 22.0,
+    "avg_cleanses_per_minute": 28.4,
+    "encounter_difficulty": "Hard",
+    "group_coordination": "Needs Work"
   }
 ]

@@ -1,5 +1,24 @@
 [
   {
+    "player_name": "Rogerus Braddock",
+    "profession": "Weaver",
+    "squad_group": 1,
+    "primary_role": "Stability Support",
+    "build_type": "Condi",
+    "first_encounter_date": "2026-08-21",
+    "last_encounter_date": "2026-08-21",
+    "days_active": 0,
+    "total_encounters": 1,
+    "avg_dps": 133.0,
+    "total_damage_dealt": 9732,
+    "avg_deaths_per_encounter": 1.0,
+    "avg_survival_ratio": 0.14,
+    "avg_stability_uptime": 1.0,
+    "avg_quickness_uptime": 0.0,
+    "avg_cleanses_per_minute": 11.5,
+    "avg_cc_seconds": 0.0
+  },
+  {
     "player_name": "Aiko Miyashiro",
     "profession": "Necromancer",
     "squad_group": 7,
@@ -54,7 +73,7 @@
     "avg_stability_uptime": 2.8,
     "avg_quickness_uptime": 10.7,
     "avg_cleanses_per_minute": 5.4,
-    "avg_cc_seconds": NaN
+    "avg_cc_seconds": 0.49
   },
   {
     "player_name": "Roja Ty Lee",
@@ -73,7 +92,7 @@
     "avg_stability_uptime": 2.2,
     "avg_quickness_uptime": 8.5,
     "avg_cleanses_per_minute": 3.2,
-    "avg_cc_seconds": NaN
+    "avg_cc_seconds": 0.08
   },
   {
     "player_name": "Payton My Inmortal",
@@ -92,7 +111,7 @@
     "avg_stability_uptime": 1.2,
     "avg_quickness_uptime": 18.1,
     "avg_cleanses_per_minute": 7.2,
-    "avg_cc_seconds": NaN
+    "avg_cc_seconds": 0.08
   },
   {
     "player_name": "Ferox Blackmane",
@@ -114,6 +133,25 @@
     "avg_cc_seconds": 0.0
   },
   {
+    "player_name": "A Terrifying Mouse",
+    "profession": "Reaper",
+    "squad_group": 3,
+    "primary_role": "Stability Support",
+    "build_type": "Power",
+    "first_encounter_date": "2026-08-21",
+    "last_encounter_date": "2026-08-21",
+    "days_active": 0,
+    "total_encounters": 1,
+    "avg_dps": 1541.0,
+    "total_damage_dealt": 112884,
+    "avg_deaths_per_encounter": 1.0,
+    "avg_survival_ratio": 1.34,
+    "avg_stability_uptime": 0.6,
+    "avg_quickness_uptime": 9.2,
+    "avg_cleanses_per_minute": 9.0,
+    "avg_cc_seconds": 0.0
+  },
+  {
     "player_name": "Nick Klauss",
     "profession": "Druid",
     "squad_group": 5,
@@ -130,7 +168,7 @@
     "avg_stability_uptime": 2.9,
     "avg_quickness_uptime": 34.8,
     "avg_cleanses_per_minute": 6.8,
-    "avg_cc_seconds": NaN
+    "avg_cc_seconds": 0.41
   },
   {
     "player_name": "Wínd Hawk",
@@ -168,7 +206,7 @@
     "avg_stability_uptime": 1.4,
     "avg_quickness_uptime": 16.6,
     "avg_cleanses_per_minute": 5.4,
-    "avg_cc_seconds": NaN
+    "avg_cc_seconds": 0.08
   },
   {
     "player_name": "Enshur Il",
@@ -206,7 +244,26 @@
     "avg_stability_uptime": 0.7,
     "avg_quickness_uptime": 13.6,
     "avg_cleanses_per_minute": 8.1,
-    "avg_cc_seconds": NaN
+    "avg_cc_seconds": 0.1
+  },
+  {
+    "player_name": "Galeshot pl-2302",
+    "profession": "Galeshot",
+    "squad_group": 51,
+    "primary_role": "Might Support",
+    "build_type": "Hybrid",
+    "first_encounter_date": "2026-08-21",
+    "last_encounter_date": "2026-08-21",
+    "days_active": 0,
+    "total_encounters": 1,
+    "avg_dps": 0.0,
+    "total_damage_dealt": 0,
+    "avg_deaths_per_encounter": 1.0,
+    "avg_survival_ratio": NaN,
+    "avg_stability_uptime": 0.1,
+    "avg_quickness_uptime": 4.1,
+    "avg_cleanses_per_minute": 3.3,
+    "avg_cc_seconds": 0.0
   },
   {
     "player_name": "Wisadell",
@@ -228,6 +285,25 @@
     "avg_cc_seconds": 0.11
   },
   {
+    "player_name": "Adönai",
+    "profession": "Troubadour",
+    "squad_group": 1,
+    "primary_role": "Stability Support",
+    "build_type": "Condi",
+    "first_encounter_date": "2026-08-21",
+    "last_encounter_date": "2026-08-21",
+    "days_active": 0,
+    "total_encounters": 1,
+    "avg_dps": 921.0,
+    "total_damage_dealt": 67456,
+    "avg_deaths_per_encounter": 1.0,
+    "avg_survival_ratio": 0.33,
+    "avg_stability_uptime": 0.9,
+    "avg_quickness_uptime": 20.2,
+    "avg_cleanses_per_minute": 50.0,
+    "avg_cc_seconds": 0.0
+  },
+  {
     "player_name": "Der Baron Haku",
     "profession": "Troubadour",
     "squad_group": 4,
@@ -244,7 +320,7 @@
     "avg_stability_uptime": 2.6,
     "avg_quickness_uptime": 11.6,
     "avg_cleanses_per_minute": 5.0,
-    "avg_cc_seconds": NaN
+    "avg_cc_seconds": 0.34
   },
   {
     "player_name": "Ing Malpagado",
@@ -263,7 +339,7 @@
     "avg_stability_uptime": 3.4,
     "avg_quickness_uptime": 32.9,
     "avg_cleanses_per_minute": 10.8,
-    "avg_cc_seconds": NaN
+    "avg_cc_seconds": 0.42
   },
   {
     "player_name": "Xcartonxx",
@@ -282,7 +358,26 @@
     "avg_stability_uptime": 2.9,
     "avg_quickness_uptime": 19.8,
     "avg_cleanses_per_minute": 3.6,
-    "avg_cc_seconds": NaN
+    "avg_cc_seconds": 0.57
+  },
+  {
+    "player_name": "Reaper pl-3251",
+    "profession": "Reaper",
+    "squad_group": 51,
+    "primary_role": "Might Support",
+    "build_type": "Hybrid",
+    "first_encounter_date": "2026-08-21",
+    "last_encounter_date": "2026-08-21",
+    "days_active": 0,
+    "total_encounters": 1,
+    "avg_dps": 0.0,
+    "total_damage_dealt": 0,
+    "avg_deaths_per_encounter": 1.0,
+    "avg_survival_ratio": NaN,
+    "avg_stability_uptime": 0.2,
+    "avg_quickness_uptime": 0.0,
+    "avg_cleanses_per_minute": 1.6,
+    "avg_cc_seconds": 0.0
   },
   {
     "player_name": "Skaldi Bjorndottir",
@@ -301,6 +396,25 @@
     "avg_stability_uptime": 2.7,
     "avg_quickness_uptime": 35.4,
     "avg_cleanses_per_minute": 7.7,
+    "avg_cc_seconds": 0.0
+  },
+  {
+    "player_name": "Mrlamann",
+    "profession": "Firebrand",
+    "squad_group": 5,
+    "primary_role": "Stability Support",
+    "build_type": "Power",
+    "first_encounter_date": "2026-08-21",
+    "last_encounter_date": "2026-08-21",
+    "days_active": 0,
+    "total_encounters": 1,
+    "avg_dps": 1306.0,
+    "total_damage_dealt": 95615,
+    "avg_deaths_per_encounter": 1.0,
+    "avg_survival_ratio": 0.55,
+    "avg_stability_uptime": 2.8,
+    "avg_quickness_uptime": 47.0,
+    "avg_cleanses_per_minute": 41.0,
     "avg_cc_seconds": 0.0
   },
   {
@@ -339,7 +453,26 @@
     "avg_stability_uptime": 0.4,
     "avg_quickness_uptime": 5.4,
     "avg_cleanses_per_minute": 7.2,
-    "avg_cc_seconds": NaN
+    "avg_cc_seconds": 0.4
+  },
+  {
+    "player_name": "Æter Frontline",
+    "profession": "Firebrand",
+    "squad_group": 2,
+    "primary_role": "Stability Support",
+    "build_type": "Power",
+    "first_encounter_date": "2026-08-21",
+    "last_encounter_date": "2026-08-21",
+    "days_active": 0,
+    "total_encounters": 1,
+    "avg_dps": 604.0,
+    "total_damage_dealt": 44227,
+    "avg_deaths_per_encounter": 1.0,
+    "avg_survival_ratio": 0.27,
+    "avg_stability_uptime": 4.8,
+    "avg_quickness_uptime": 32.9,
+    "avg_cleanses_per_minute": 41.0,
+    "avg_cc_seconds": 0.0
   },
   {
     "player_name": "Akromita",
@@ -377,7 +510,7 @@
     "avg_stability_uptime": 0.6,
     "avg_quickness_uptime": 4.3,
     "avg_cleanses_per_minute": 8.6,
-    "avg_cc_seconds": NaN
+    "avg_cc_seconds": 0.67
   },
   {
     "player_name": "Esmeräldä",
@@ -396,7 +529,26 @@
     "avg_stability_uptime": 2.0,
     "avg_quickness_uptime": 1.1,
     "avg_cleanses_per_minute": 4.5,
-    "avg_cc_seconds": NaN
+    "avg_cc_seconds": 0.13
+  },
+  {
+    "player_name": "X Paco X",
+    "profession": "Dragonhunter",
+    "squad_group": 4,
+    "primary_role": "Elite Cleanser",
+    "build_type": "Power",
+    "first_encounter_date": "2026-08-21",
+    "last_encounter_date": "2026-08-21",
+    "days_active": 0,
+    "total_encounters": 1,
+    "avg_dps": 1327.0,
+    "total_damage_dealt": 97146,
+    "avg_deaths_per_encounter": 1.0,
+    "avg_survival_ratio": 0.98,
+    "avg_stability_uptime": 0.4,
+    "avg_quickness_uptime": 3.7,
+    "avg_cleanses_per_minute": 17.2,
+    "avg_cc_seconds": 0.0
   },
   {
     "player_name": "Kîîwî",
@@ -415,6 +567,25 @@
     "avg_stability_uptime": 2.3,
     "avg_quickness_uptime": 2.0,
     "avg_cleanses_per_minute": 4.5,
+    "avg_cc_seconds": 0.0
+  },
+  {
+    "player_name": "Spirit Of Lucky",
+    "profession": "Druid",
+    "squad_group": 2,
+    "primary_role": "Stability Support",
+    "build_type": "Hybrid",
+    "first_encounter_date": "2026-08-21",
+    "last_encounter_date": "2026-08-21",
+    "days_active": 0,
+    "total_encounters": 1,
+    "avg_dps": 26.0,
+    "total_damage_dealt": 1934,
+    "avg_deaths_per_encounter": 1.0,
+    "avg_survival_ratio": 0.01,
+    "avg_stability_uptime": 3.2,
+    "avg_quickness_uptime": 39.3,
+    "avg_cleanses_per_minute": 47.5,
     "avg_cc_seconds": 0.0
   },
   {
@@ -437,41 +608,98 @@
     "avg_cc_seconds": 0.0
   },
   {
-    "player_name": "Für Elisse",
-    "profession": "Firebrand",
-    "squad_group": 3,
+    "player_name": "Aísha Andros",
+    "profession": "Evoker",
+    "squad_group": 2,
     "primary_role": "Stability Support",
-    "build_type": "Hybrid",
-    "first_encounter_date": "2026-08-16",
-    "last_encounter_date": "2026-08-16",
+    "build_type": "Power",
+    "first_encounter_date": "2026-08-21",
+    "last_encounter_date": "2026-08-21",
     "days_active": 0,
     "total_encounters": 1,
-    "avg_dps": 270.0,
-    "total_damage_dealt": 35918,
-    "avg_deaths_per_encounter": 0.0,
-    "avg_survival_ratio": 1.38,
-    "avg_stability_uptime": 1.8,
-    "avg_quickness_uptime": 34.4,
-    "avg_cleanses_per_minute": 6.8,
-    "avg_cc_seconds": NaN
+    "avg_dps": 1678.0,
+    "total_damage_dealt": 122851,
+    "avg_deaths_per_encounter": 1.0,
+    "avg_survival_ratio": 1.01,
+    "avg_stability_uptime": 3.3,
+    "avg_quickness_uptime": 16.4,
+    "avg_cleanses_per_minute": 33.6,
+    "avg_cc_seconds": 0.0
+  },
+  {
+    "player_name": "Skatolll",
+    "profession": "Catalyst",
+    "squad_group": 3,
+    "primary_role": "Stability Support",
+    "build_type": "Power",
+    "first_encounter_date": "2026-08-21",
+    "last_encounter_date": "2026-08-21",
+    "days_active": 0,
+    "total_encounters": 1,
+    "avg_dps": 844.0,
+    "total_damage_dealt": 61828,
+    "avg_deaths_per_encounter": 1.0,
+    "avg_survival_ratio": 1.51,
+    "avg_stability_uptime": 1.6,
+    "avg_quickness_uptime": 17.8,
+    "avg_cleanses_per_minute": 6.6,
+    "avg_cc_seconds": 0.0
+  },
+  {
+    "player_name": "Cheesey Of Baconia",
+    "profession": "Evoker",
+    "squad_group": 4,
+    "primary_role": "Stability Support",
+    "build_type": "Power",
+    "first_encounter_date": "2026-08-21",
+    "last_encounter_date": "2026-08-21",
+    "days_active": 0,
+    "total_encounters": 1,
+    "avg_dps": 184.0,
+    "total_damage_dealt": 13450,
+    "avg_deaths_per_encounter": 1.0,
+    "avg_survival_ratio": 0.11,
+    "avg_stability_uptime": 3.5,
+    "avg_quickness_uptime": 33.5,
+    "avg_cleanses_per_minute": 50.0,
+    "avg_cc_seconds": 0.0
+  },
+  {
+    "player_name": "Für Elisse",
+    "profession": "Firebrand",
+    "squad_group": 4,
+    "primary_role": "Stability Support",
+    "build_type": "Power",
+    "first_encounter_date": "2026-08-16",
+    "last_encounter_date": "2026-08-21",
+    "days_active": 5,
+    "total_encounters": 2,
+    "avg_dps": 500.0,
+    "total_damage_dealt": 89387,
+    "avg_deaths_per_encounter": 0.5,
+    "avg_survival_ratio": 0.86,
+    "avg_stability_uptime": 2.2,
+    "avg_quickness_uptime": 40.5,
+    "avg_cleanses_per_minute": 27.1,
+    "avg_cc_seconds": 0.13
   },
   {
     "player_name": "Brynhildr Forst",
     "profession": "Firebrand",
-    "squad_group": 2,
+    "squad_group": 3,
     "primary_role": "Stability Support",
-    "build_type": "Hybrid",
+    "build_type": "Power",
     "first_encounter_date": "2026-08-16",
-    "last_encounter_date": "2026-08-16",
-    "days_active": 0,
-    "total_encounters": 1,
-    "avg_dps": 428.0,
-    "total_damage_dealt": 56866,
-    "avg_deaths_per_encounter": 0.0,
-    "avg_survival_ratio": 1.89,
-    "avg_stability_uptime": 2.2,
-    "avg_quickness_uptime": 30.8,
-    "avg_cleanses_per_minute": 8.1,
+    "last_encounter_date": "2026-08-21",
+    "days_active": 5,
+    "total_encounters": 2,
+    "avg_dps": 300.0,
+    "total_damage_dealt": 69403,
+    "avg_deaths_per_encounter": 0.5,
+    "avg_survival_ratio": 1.0,
+    "avg_stability_uptime": 2.7,
+    "avg_quickness_uptime": 34.6,
+    "avg_cleanses_per_minute": 21.7,
     "avg_cc_seconds": 0.0
   },
   {
@@ -491,26 +719,26 @@
     "avg_stability_uptime": 0.8,
     "avg_quickness_uptime": 10.3,
     "avg_cleanses_per_minute": 7.7,
-    "avg_cc_seconds": NaN
+    "avg_cc_seconds": 0.08
   },
   {
     "player_name": "Moira Snowraven",
     "profession": "Reaper",
-    "squad_group": 2,
+    "squad_group": 4,
     "primary_role": "Stability Support",
     "build_type": "Power",
     "first_encounter_date": "2026-08-16",
-    "last_encounter_date": "2026-08-16",
-    "days_active": 0,
-    "total_encounters": 1,
-    "avg_dps": 1951.0,
-    "total_damage_dealt": 259155,
+    "last_encounter_date": "2026-08-21",
+    "days_active": 5,
+    "total_encounters": 2,
+    "avg_dps": 1994.0,
+    "total_damage_dealt": 408225,
     "avg_deaths_per_encounter": 1.0,
-    "avg_survival_ratio": 1.89,
-    "avg_stability_uptime": 1.8,
-    "avg_quickness_uptime": 41.7,
-    "avg_cleanses_per_minute": 8.6,
-    "avg_cc_seconds": NaN
+    "avg_survival_ratio": 1.42,
+    "avg_stability_uptime": 2.8,
+    "avg_quickness_uptime": 38.5,
+    "avg_cleanses_per_minute": 30.1,
+    "avg_cc_seconds": 0.08
   },
   {
     "player_name": "Lucia Lightspirit",
@@ -529,7 +757,7 @@
     "avg_stability_uptime": 0.9,
     "avg_quickness_uptime": 0.0,
     "avg_cleanses_per_minute": 8.6,
-    "avg_cc_seconds": NaN
+    "avg_cc_seconds": 0.41
   },
   {
     "player_name": "Deadeye pl-4268",
@@ -567,26 +795,45 @@
     "avg_stability_uptime": 2.4,
     "avg_quickness_uptime": 27.1,
     "avg_cleanses_per_minute": 5.0,
-    "avg_cc_seconds": NaN
+    "avg_cc_seconds": 0.32
   },
   {
     "player_name": "Sol Atonatiuh",
     "profession": "Reaper",
-    "squad_group": 3,
+    "squad_group": 5,
     "primary_role": "Stability Support",
     "build_type": "Power",
     "first_encounter_date": "2026-08-16",
-    "last_encounter_date": "2026-08-16",
+    "last_encounter_date": "2026-08-21",
+    "days_active": 5,
+    "total_encounters": 2,
+    "avg_dps": 2250.0,
+    "total_damage_dealt": 514777,
+    "avg_deaths_per_encounter": 0.5,
+    "avg_survival_ratio": 8.41,
+    "avg_stability_uptime": 2.2,
+    "avg_quickness_uptime": 59.0,
+    "avg_cleanses_per_minute": 25.6,
+    "avg_cc_seconds": 0.23
+  },
+  {
+    "player_name": "Rc Ritualista",
+    "profession": "Reaper",
+    "squad_group": 2,
+    "primary_role": "DPS",
+    "build_type": "Power",
+    "first_encounter_date": "2026-08-21",
+    "last_encounter_date": "2026-08-21",
     "days_active": 0,
     "total_encounters": 1,
-    "avg_dps": 3108.0,
-    "total_damage_dealt": 412864,
-    "avg_deaths_per_encounter": 0.0,
-    "avg_survival_ratio": 16.35,
-    "avg_stability_uptime": 2.1,
-    "avg_quickness_uptime": 65.5,
-    "avg_cleanses_per_minute": 7.7,
-    "avg_cc_seconds": NaN
+    "avg_dps": 6.0,
+    "total_damage_dealt": 416,
+    "avg_deaths_per_encounter": 1.0,
+    "avg_survival_ratio": 0.01,
+    "avg_stability_uptime": 0.1,
+    "avg_quickness_uptime": 4.1,
+    "avg_cleanses_per_minute": 6.6,
+    "avg_cc_seconds": 0.0
   },
   {
     "player_name": "Scourge pl-32",
@@ -648,21 +895,21 @@
   {
     "player_name": "Theron Dyr",
     "profession": "Druid",
-    "squad_group": 2,
+    "squad_group": 3,
     "primary_role": "Stability Support",
     "build_type": "Power",
     "first_encounter_date": "2026-08-16",
-    "last_encounter_date": "2026-08-16",
-    "days_active": 0,
-    "total_encounters": 1,
-    "avg_dps": 283.0,
-    "total_damage_dealt": 37661,
-    "avg_deaths_per_encounter": 0.0,
-    "avg_survival_ratio": 1.57,
-    "avg_stability_uptime": 2.7,
-    "avg_quickness_uptime": 22.1,
-    "avg_cleanses_per_minute": 6.3,
-    "avg_cc_seconds": NaN
+    "last_encounter_date": "2026-08-21",
+    "days_active": 5,
+    "total_encounters": 2,
+    "avg_dps": 172.0,
+    "total_damage_dealt": 42128,
+    "avg_deaths_per_encounter": 0.5,
+    "avg_survival_ratio": 0.81,
+    "avg_stability_uptime": 3.0,
+    "avg_quickness_uptime": 21.3,
+    "avg_cleanses_per_minute": 22.8,
+    "avg_cc_seconds": 0.23
   },
   {
     "player_name": "Scourge pl-5046",
@@ -700,7 +947,7 @@
     "avg_stability_uptime": 2.5,
     "avg_quickness_uptime": 44.7,
     "avg_cleanses_per_minute": 7.7,
-    "avg_cc_seconds": NaN
+    "avg_cc_seconds": 0.3
   },
   {
     "player_name": "Béllazé",
@@ -719,6 +966,25 @@
     "avg_stability_uptime": 1.3,
     "avg_quickness_uptime": 14.8,
     "avg_cleanses_per_minute": 7.2,
+    "avg_cc_seconds": 0.0
+  },
+  {
+    "player_name": "Dragonhunter pl-4330",
+    "profession": "Dragonhunter",
+    "squad_group": 51,
+    "primary_role": "DPS",
+    "build_type": "Hybrid",
+    "first_encounter_date": "2026-08-21",
+    "last_encounter_date": "2026-08-21",
+    "days_active": 0,
+    "total_encounters": 1,
+    "avg_dps": 0.0,
+    "total_damage_dealt": 0,
+    "avg_deaths_per_encounter": 1.0,
+    "avg_survival_ratio": NaN,
+    "avg_stability_uptime": 0.0,
+    "avg_quickness_uptime": 0.0,
+    "avg_cleanses_per_minute": 0.0,
     "avg_cc_seconds": 0.0
   },
   {
@@ -741,6 +1007,25 @@
     "avg_cc_seconds": 0.0
   },
   {
+    "player_name": "Revevenent",
+    "profession": "Conduit",
+    "squad_group": 5,
+    "primary_role": "DPS",
+    "build_type": "Power",
+    "first_encounter_date": "2026-08-21",
+    "last_encounter_date": "2026-08-21",
+    "days_active": 0,
+    "total_encounters": 1,
+    "avg_dps": 57.0,
+    "total_damage_dealt": 4143,
+    "avg_deaths_per_encounter": 1.0,
+    "avg_survival_ratio": 0.07,
+    "avg_stability_uptime": 0.0,
+    "avg_quickness_uptime": 4.0,
+    "avg_cleanses_per_minute": 4.9,
+    "avg_cc_seconds": 0.0
+  },
+  {
     "player_name": "Arthis Lionheart",
     "profession": "Reaper",
     "squad_group": 8,
@@ -757,6 +1042,63 @@
     "avg_stability_uptime": 1.1,
     "avg_quickness_uptime": 9.5,
     "avg_cleanses_per_minute": 7.7,
+    "avg_cc_seconds": 0.0
+  },
+  {
+    "player_name": "Big Sekse",
+    "profession": "Druid",
+    "squad_group": 4,
+    "primary_role": "Stability Support",
+    "build_type": "Power",
+    "first_encounter_date": "2026-08-21",
+    "last_encounter_date": "2026-08-21",
+    "days_active": 0,
+    "total_encounters": 1,
+    "avg_dps": 39.0,
+    "total_damage_dealt": 2820,
+    "avg_deaths_per_encounter": 1.0,
+    "avg_survival_ratio": 0.02,
+    "avg_stability_uptime": 3.1,
+    "avg_quickness_uptime": 41.9,
+    "avg_cleanses_per_minute": 53.3,
+    "avg_cc_seconds": 0.0
+  },
+  {
+    "player_name": "Hirokuuun",
+    "profession": "Spellbreaker",
+    "squad_group": 5,
+    "primary_role": "Stability Support",
+    "build_type": "Power",
+    "first_encounter_date": "2026-08-21",
+    "last_encounter_date": "2026-08-21",
+    "days_active": 0,
+    "total_encounters": 1,
+    "avg_dps": 4343.0,
+    "total_damage_dealt": 318018,
+    "avg_deaths_per_encounter": 1.0,
+    "avg_survival_ratio": 2.02,
+    "avg_stability_uptime": 3.6,
+    "avg_quickness_uptime": 32.6,
+    "avg_cleanses_per_minute": 41.8,
+    "avg_cc_seconds": 0.0
+  },
+  {
+    "player_name": "Double Dipper",
+    "profession": "Soulbeast",
+    "squad_group": 1,
+    "primary_role": "Stability Support",
+    "build_type": "Power",
+    "first_encounter_date": "2026-08-21",
+    "last_encounter_date": "2026-08-21",
+    "days_active": 0,
+    "total_encounters": 1,
+    "avg_dps": 872.0,
+    "total_damage_dealt": 63828,
+    "avg_deaths_per_encounter": 1.0,
+    "avg_survival_ratio": 0.94,
+    "avg_stability_uptime": 0.6,
+    "avg_quickness_uptime": 8.5,
+    "avg_cleanses_per_minute": 12.3,
     "avg_cc_seconds": 0.0
   },
   {
@@ -833,6 +1175,25 @@
     "avg_stability_uptime": 0.0,
     "avg_quickness_uptime": 0.0,
     "avg_cleanses_per_minute": 0.9,
+    "avg_cc_seconds": 0.0
+  },
+  {
+    "player_name": "Käsäne Teto",
+    "profession": "Troubadour",
+    "squad_group": 2,
+    "primary_role": "Stability Support",
+    "build_type": "Power",
+    "first_encounter_date": "2026-08-21",
+    "last_encounter_date": "2026-08-21",
+    "days_active": 0,
+    "total_encounters": 1,
+    "avg_dps": 140.0,
+    "total_damage_dealt": 10288,
+    "avg_deaths_per_encounter": 1.0,
+    "avg_survival_ratio": 0.07,
+    "avg_stability_uptime": 5.1,
+    "avg_quickness_uptime": 18.5,
+    "avg_cleanses_per_minute": 34.4,
     "avg_cc_seconds": 0.0
   }
 ]
