@@ -49,5 +49,22 @@
     "avg_cleanses_per_minute": 28.4,
     "encounter_difficulty": "Hard",
     "group_coordination": "Needs Work"
+  },
+  {
+    "encounter_id": 459008,
+    "encounter_date": "2026-08-23",
+    "encounter_time": "2026-08-23 19:35:53",
+    "encounter_duration_minutes": 1.3593166666666667,
+    "total_players": 16,
+    "unique_professions": 13,
+    "avg_dps": 311.0,
+    "total_group_damage": 405414,
+    "avg_deaths": 0.5,
+    "total_deaths": 8,
+    "avg_stability_uptime": 0.5,
+    "avg_quickness_uptime": 4.5,
+    "avg_cleanses_per_minute": 4.9,
+    "encounter_difficulty": "Hard",
+    "group_coordination": "Needs Work"
   }
 ]

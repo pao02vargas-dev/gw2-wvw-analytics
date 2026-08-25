@@ -372,5 +372,39 @@
     "avg_cleanses_per_minute": 2.8,
     "support_ratio": 0.33,
     "squad_balance": "Balanced"
+  },
+  {
+    "encounter_date": "2026-08-23",
+    "squad_group": 51,
+    "squad_size": 4,
+    "total_encounters": 1,
+    "support_count": 0,
+    "dps_count": 4,
+    "cleanser_count": 0,
+    "avg_dps": 0.0,
+    "total_squad_damage": 0,
+    "avg_deaths": 0.25,
+    "avg_stability_uptime": 0.1,
+    "avg_quickness_uptime": 0.0,
+    "avg_cleanses_per_minute": 0.6,
+    "support_ratio": 0.0,
+    "squad_balance": "DPS Heavy"
+  },
+  {
+    "encounter_date": "2026-08-23",
+    "squad_group": 1,
+    "squad_size": 12,
+    "total_encounters": 1,
+    "support_count": 12,
+    "dps_count": 0,
+    "cleanser_count": 0,
+    "avg_dps": 414.0,
+    "total_squad_damage": 405414,
+    "avg_deaths": 0.58,
+    "avg_stability_uptime": 0.6,
+    "avg_quickness_uptime": 6.0,
+    "avg_cleanses_per_minute": 6.4,
+    "support_ratio": 1.0,
+    "squad_balance": "Support Heavy"
   }
 ]
